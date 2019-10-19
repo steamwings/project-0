@@ -1,0 +1,15 @@
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Project0.exe
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Project0.deps.json
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Project0.runtimeconfig.json
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Project0.runtimeconfig.dev.json
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Project0.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Project0.pdb
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.csprojAssemblyReference.cache
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.Properties.Resources.resources
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.csproj.GenerateResource.cache
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.AssemblyInfoInputs.cache
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.AssemblyInfo.cs
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.dll
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.pdb
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\git\Project0\Project0\Project0\obj\Debug\netcoreapp3.0\Project0.csproj.CopyComplete
