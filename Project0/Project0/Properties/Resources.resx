@@ -120,26 +120,56 @@
   <data name="AmountRegex" xml:space="preserve">
     <value>@"^\d{0,14}(.\d{2})?$"</value>
   </data>
+  <data name="AreYouSureDeleteAccount" xml:space="preserve">
+    <value>Are you sure you want to close this account?</value>
+  </data>
+  <data name="AreYouSureDeleteCustomer" xml:space="preserve">
+    <value>Are you sure you want to close all your accounts with us?</value>
+  </data>
+  <data name="CannotCloseFundsOwed" xml:space="preserve">
+    <value>You cannot close this account because funds are owed.</value>
+  </data>
+  <data name="CannotCloseOutFundsOwed" xml:space="preserve">
+    <value>You cannot close all your accounts because funds are owed.</value>
+  </data>
+  <data name="CDMenuOptions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CheckingAccountMenuOptions" xml:space="preserve">
+    <value />
+  </data>
   <data name="CreateUsername" xml:space="preserve">
     <value>Please enter a username for your new account.</value>
   </data>
   <data name="EnterUsername" xml:space="preserve">
     <value>Please enter your username to login.</value>
   </data>
+  <data name="ErrorInvalidProgramFlow" xml:space="preserve">
+    <value>Invalid program state!</value>
+  </data>
   <data name="ExistingAccountOrRegister" xml:space="preserve">
     <value>Would you like to [login] to an existing account, [register] for a new account], or [exit]?</value>
   </data>
+  <data name="GiveAccountName" xml:space="preserve">
+    <value>Please give this account a name.</value>
+  </data>
   <data name="Goodbye" xml:space="preserve">
     <value>Thank you for banking with Console First. Goodbye.</value>
+  </data>
+  <data name="LoanMenuOptions" xml:space="preserve">
+    <value />
   </data>
   <data name="LoanWithdraw" xml:space="preserve">
     <value>If you would like to increase the amount of your loan, please speak to a store associate.</value>
   </data>
   <data name="MainMenuOptions" xml:space="preserve">
-    <value>Would you like to [view] an account, [create] an account, or [exit]?</value>
+    <value>Would you like to [view] an account, open a [new] account, [transfer] between accounts or [exit]?</value>
   </data>
   <data name="PleaseEnter" xml:space="preserve">
     <value>Please enter: </value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Please select an account.</value>
   </data>
   <data name="ServiceUnavailable" xml:space="preserve">
     <value>An unexpected error occurred. This service is temporarily unavailable.</value>

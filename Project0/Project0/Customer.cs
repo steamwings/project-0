@@ -24,16 +24,44 @@ namespace Project0
             accounts.Remove(a);
         }
 
-        public bool Withdraw(int id, int amount)
+        public void RemoveAllAccounts()
         {
-            return accounts.Where(a => a.ID == id).().Withdraw(amount);
-            
+            foreach(IAccount a in accounts)
+            {
+                RemoveAccount(a);
+            }
         }
-        public bool Withdraw(string name, int amount)
+        public void DisplayAllAccounts()
         {
-            return accounts.Where(a => a.Name == name).Single().Withdraw(amount);
+            foreach(IAccount a in accounts)
+            {
+                a.DisplayInfo();
+            }
         }
         
+        public bool FundsOwed()
+        {
+            foreach(IAccount a in accounts)
+            {
+                if (a.Balance < 0) return true;
+            }
+            return false;
+        }
+
+        public IEnumerable<CheckingAccount> GetCheckingAccounts()
+        {
+            return (IEnumerable<CheckingAccount>) accounts.Where(a => a is CheckingAccount);
+        }
+
+        public IEnumerable<string> GetAccountNames()
+        {
+            return from a in accounts select a.Name;
+        }
+
+        public IAccount GetAccount(string name)
+        {
+            return accounts.Where(a => a.Name == name).Single();
+        }
 
     }
 }

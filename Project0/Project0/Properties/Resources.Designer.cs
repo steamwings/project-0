@@ -61,20 +61,65 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string AccountMenuOptions {
-            get {
-                return ResourceManager.GetString("AccountMenuOptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to @&quot;^\d{0,14}(.\d{2})?$&quot;.
         /// </summary>
         internal static string AmountRegex {
             get {
                 return ResourceManager.GetString("AmountRegex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to close this account?.
+        /// </summary>
+        internal static string AreYouSureDeleteAccount {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to close all your accounts with us?.
+        /// </summary>
+        internal static string AreYouSureDeleteCustomer {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot close this account because funds are owed..
+        /// </summary>
+        internal static string CannotCloseFundsOwed {
+            get {
+                return ResourceManager.GetString("CannotCloseFundsOwed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot close all your accounts because funds are owed..
+        /// </summary>
+        internal static string CannotCloseOutFundsOwed {
+            get {
+                return ResourceManager.GetString("CannotCloseOutFundsOwed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string CDMenuOptions {
+            get {
+                return ResourceManager.GetString("CDMenuOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string CheckingAccountMenuOptions {
+            get {
+                return ResourceManager.GetString("CheckingAccountMenuOptions", resourceCulture);
             }
         }
         
@@ -97,11 +142,29 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid program state!.
+        /// </summary>
+        internal static string ErrorInvalidProgramFlow {
+            get {
+                return ResourceManager.GetString("ErrorInvalidProgramFlow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Would you like to [login] to an existing account, [register] for a new account], or [exit]?.
         /// </summary>
         internal static string ExistingAccountOrRegister {
             get {
                 return ResourceManager.GetString("ExistingAccountOrRegister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please give this account a name..
+        /// </summary>
+        internal static string GiveAccountName {
+            get {
+                return ResourceManager.GetString("GiveAccountName", resourceCulture);
             }
         }
         
@@ -115,6 +178,15 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string LoanMenuOptions {
+            get {
+                return ResourceManager.GetString("LoanMenuOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If you would like to increase the amount of your loan, please speak to a store associate..
         /// </summary>
         internal static string LoanWithdraw {
@@ -124,7 +196,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to [view] an account, open a [new] account, or [exit]?.
+        ///   Looks up a localized string similar to Would you like to [view] an account, open a [new] account, [transfer] between accounts or [exit]?.
         /// </summary>
         internal static string MainMenuOptions {
             get {
@@ -138,6 +210,15 @@ namespace Project0.Properties {
         internal static string PleaseEnter {
             get {
                 return ResourceManager.GetString("PleaseEnter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select an account..
+        /// </summary>
+        internal static string SelectAccount {
+            get {
+                return ResourceManager.GetString("SelectAccount", resourceCulture);
             }
         }
         
