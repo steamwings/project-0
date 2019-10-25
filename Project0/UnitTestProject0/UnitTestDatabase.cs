@@ -11,6 +11,7 @@ namespace UnitTestProject0
         [TestMethod]
         public void TestCreateCustomer()
         {
+            UnitTestSetup.SetupTesting();
             Assert.IsTrue(true);
         }
 

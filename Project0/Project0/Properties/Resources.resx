@@ -120,6 +120,9 @@
   <data name="AccountMenu" xml:space="preserve">
     <value>Here are your accounts.</value>
   </data>
+  <data name="AccountNameUnavailable" xml:space="preserve">
+    <value>You already have an account with this name.</value>
+  </data>
   <data name="AmountRegex" xml:space="preserve">
     <value>@"^\d{0,14}(.\d{2})?$"</value>
   </data>
@@ -134,6 +137,16 @@
   </data>
   <data name="CannotCloseOutFundsOwed" xml:space="preserve">
     <value>You cannot close all your accounts because funds are owed.</value>
+  </data>
+  <data name="CloseRemoveFunds" xml:space="preserve">
+    <value>You still have funds in your account. What would you like to do?</value>
+  </data>
+  <data name="ConfirmClosePremature" xml:space="preserve">
+    <value>Are you sure you want to close this account prematurely? Funds can be transferred out after closing.</value>
+  </data>
+  <data name="ConfirmCloseWithFunds" xml:space="preserve">
+    <value>WARNING: You will lose access to funds!
+Are you sure you want to delete your account?</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Please enter a password: </value>
@@ -157,7 +170,7 @@
     <value>Invalid program state!</value>
   </data>
   <data name="ExistingAccountOrRegister" xml:space="preserve">
-    <value>Would you like to [login] to an existing account, [register] for a new account], or [exit]?</value>
+    <value>Would you like to [login] to an existing account or [register] for a new account?</value>
   </data>
   <data name="GiveAccountName" xml:space="preserve">
     <value>Please give this account a name.</value>
@@ -172,7 +185,7 @@
     <value>Invalid input. Try again.</value>
   </data>
   <data name="MainMenuOptions" xml:space="preserve">
-    <value>Would you like to [view] an account, open a [new] account, [transfer] between accounts, [close] all accounts or [exit]?</value>
+    <value>You can [view] an account, open a [new] account, [transfer] between accounts, [close] all accounts or [logout].</value>
   </data>
   <data name="OperationCancelled" xml:space="preserve">
     <value>Operation cancelled.</value>
@@ -247,7 +260,7 @@
     <value>What is the size of the loan you would like to take out? All loans subject to approval.</value>
   </data>
   <data name="WithdrawalImmatureFunds" xml:space="preserve">
-    <value>Immature funds cannot be withdrawn.</value>
+    <value>Immature funds cannot be withdrawn. Funds can be withdrawn if the account is closed prematurely.</value>
   </data>
   <data name="WithdrawalInsufficientFunds" xml:space="preserve">
     <value>Insufficient funds for requested withdrawal.</value>

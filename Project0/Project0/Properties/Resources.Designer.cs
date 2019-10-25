@@ -70,6 +70,15 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You already have an account with this name..
+        /// </summary>
+        internal static string AccountNameUnavailable {
+            get {
+                return ResourceManager.GetString("AccountNameUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to @&quot;^\d{0,14}(.\d{2})?$&quot;.
         /// </summary>
         internal static string AmountRegex {
@@ -111,6 +120,34 @@ namespace Project0.Properties {
         internal static string CannotCloseOutFundsOwed {
             get {
                 return ResourceManager.GetString("CannotCloseOutFundsOwed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You still have funds in your account. What would you like to do?.
+        /// </summary>
+        internal static string CloseRemoveFunds {
+            get {
+                return ResourceManager.GetString("CloseRemoveFunds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to close this account prematurely? Funds can be transferred out after closing..
+        /// </summary>
+        internal static string ConfirmClosePremature {
+            get {
+                return ResourceManager.GetString("ConfirmClosePremature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING: You will lose access to funds!
+        ///Are you sure you want to delete your account?.
+        /// </summary>
+        internal static string ConfirmCloseWithFunds {
+            get {
+                return ResourceManager.GetString("ConfirmCloseWithFunds", resourceCulture);
             }
         }
         
@@ -178,7 +215,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to [login] to an existing account, [register] for a new account], or [exit]?.
+        ///   Looks up a localized string similar to Would you like to [login] to an existing account or [register] for a new account?.
         /// </summary>
         internal static string ExistingAccountOrRegister {
             get {
@@ -223,7 +260,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to [view] an account, open a [new] account, [transfer] between accounts, [close] all accounts or [exit]?.
+        ///   Looks up a localized string similar to You can [view] an account, open a [new] account, [transfer] between accounts, [close] all accounts or [logout]..
         /// </summary>
         internal static string MainMenuOptions {
             get {
@@ -448,7 +485,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Immature funds cannot be withdrawn..
+        ///   Looks up a localized string similar to Immature funds cannot be withdrawn. Funds can be withdrawn if the account is closed prematurely..
         /// </summary>
         internal static string WithdrawalImmatureFunds {
             get {

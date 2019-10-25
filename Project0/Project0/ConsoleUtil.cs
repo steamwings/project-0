@@ -24,6 +24,13 @@ namespace Project0
             GetAnyKey();
         }
 
+        public static void GetAnyKey()
+        {
+            Console.WriteLine(Properties.Resources.PressAnyKey);
+            while (!Console.KeyAvailable) ;
+            Console.ReadKey(true);
+        }
+
         public static decimal GetDollarAmount()
         {
             var rg = new Regex(@"^\d{0,14}(.\d\d)?$");
@@ -43,20 +50,20 @@ namespace Project0
             else Console.WriteLine(Properties.Resources.OperationFailed);
         }
 
-        public static bool PrintWithdrawalStatus(WithdrawalResult res)
+        public static bool PrintTransferResult(TransferResult res)
         {
             switch (res)
             {
-                case WithdrawalResult.SuccessBorrowing:
+                case TransferResult.SuccessBorrowing:
                     Console.WriteLine(Properties.Resources.WithdrawalSuccessBorrow);
                     return true;
-                case WithdrawalResult.SuccessNoBorrow:
+                case TransferResult.SuccessNoBorrow:
                     Console.WriteLine(Properties.Resources.WithdrawalSuccessNoBorrow);
                     return true;
-                case WithdrawalResult.ImmatureFunds:
+                case TransferResult.ImmatureFunds:
                     Console.WriteLine(Properties.Resources.WithdrawalImmatureFunds);
                     break;
-                case WithdrawalResult.InsufficientFunds:
+                case TransferResult.InsufficientFunds:
                     Console.WriteLine(Properties.Resources.WithdrawalInsufficientFunds);
                     break;
                 default:
@@ -70,13 +77,6 @@ namespace Project0
             DoNotDisplayResponses
         }
 
-        public static void GetAnyKey()
-        {
-            Console.WriteLine(Properties.Resources.PressAnyKey);
-            while (!Console.KeyAvailable);
-            Console.Read();
-        }
-
         public static bool GetConfirm()
         {
             return GetResponse("yes", "no") == "yes";
@@ -86,11 +86,6 @@ namespace Project0
         {
             Console.WriteLine(msg);
             return GetConfirm();
-        }
-
-        public static string GetResponse(IEnumerable<string> r)
-        {
-            return GetResponse(r.ToList());
         }
 
         public static string GetResponse(params string[] vals){

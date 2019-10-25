@@ -10,6 +10,7 @@ namespace Project0
         private static readonly int minPassLen = 5;
         private static int nextAccountId = 1;
         private static Customer currentCustomer;
+        //P1TODO Use repository pattern with DB
         private static List<Customer> customers = new List<Customer>();
 
         public static decimal InterestRate { get; private set; }
@@ -39,14 +40,14 @@ namespace Project0
                         Console.Clear();
                         Console.WriteLine(currentCustomer.DisplayAllAccounts());
                         Console.WriteLine(Properties.Resources.MainMenuOptions);
-                        var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "exit");
+                        var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "logout");
                         switch (r)
                         {
                             case "view":
                                 View();
                                 break;
                             case "new":
-                                AddAccount();
+                                AddAccount<IAccount>();
                                 break;
                             case "transfer":
                                 Transfer();
@@ -54,7 +55,7 @@ namespace Project0
                             case "close":
                                 if (RemoveCustomer()) exitLoggedIn = true;
                                 break;
-                            case "exit":
+                            case "logout":
                                 exitLoggedIn = true;
                                 break;
                             default:
@@ -80,7 +81,7 @@ namespace Project0
 
         public static bool Login()
         {
-            ConsoleUtil.Display(Properties.Resources.Welcome + "\n\n");
+            ConsoleUtil.Display("\n" + Properties.Resources.Welcome + "\n\n");
             Console.WriteLine(Properties.Resources.ExistingAccountOrRegister);
             var r = ConsoleUtil.GetResponse("login", "register");
             if (r == "login")
@@ -100,14 +101,24 @@ namespace Project0
             bool exitViewAccount = false;
             IAccount acc = SelectAccount<IAccount>(Properties.Resources.SelectAccountView);
             List<string> options = new List<string>();
+            options.Add("transactions");
+            if(acc is IChecking)
+            {
+                options.Add("deposit");
+                options.Add("withdraw");
+            }
+            if (acc is ITransfer && currentCustomer.AccountCount() > 1
+                && (!(acc is ITerm) || ((ITerm)acc).IsMature))
+            {
+                options.Add("transfer");
+            }
             if (acc is IDebt && (((IDebt)acc).AmountOwed() > 0))
             {
                 options.Add("payment");
             }
-            if (acc is ITransfer)
+            else
             {
-                options.Add("deposit");
-                options.Add("withdraw");
+                options.Add("close");
             }
             options.Add("return");
             while (!exitViewAccount) // Viewing account loop
@@ -116,17 +127,25 @@ namespace Project0
                 ConsoleUtil.Display(acc.Info());
                 switch (ConsoleUtil.GetResponse(options))
                 {
+                    case "transactions":
+                        //foreach (var t in acc.Transactions) Console.WriteLine(t.ToString());
+                        Console.WriteLine(Transaction.FormatTransactions(acc.Transactions));
+                        ConsoleUtil.GetAnyKey();
+                        break;
                     case "payment":
                         success = ((IDebt)acc).MakePayment(ConsoleUtil.GetDollarAmount());
                         break;
                     case "deposit":
-                        ((ITransfer)acc).Deposit(ConsoleUtil.GetDollarAmount());
+                        ((IChecking)acc).Deposit(ConsoleUtil.GetDollarAmount());
                         break;
                     case "withdraw":
-                        success = ConsoleUtil.PrintWithdrawalStatus(((ITransfer)acc).Withdraw(ConsoleUtil.GetDollarAmount()));
+                        success = ConsoleUtil.PrintTransferResult(((IChecking)acc).Withdraw(ConsoleUtil.GetDollarAmount()));
+                        break;
+                    case "transfer":
+                        success = Transfer((ITransfer)acc);
                         break;
                     case "close":
-                        exitViewAccount = success = RemoveAccount(acc);
+                        exitViewAccount = success = CloseAccount(acc);
                         break;
                     default:
                         exitViewAccount = true;
@@ -175,15 +194,22 @@ namespace Project0
             currentCustomer = new Customer(uname, ConsoleUtil.GetPass(minPassLen));
             customers.Add(currentCustomer);
             Log.Information($"Customer \"{uname}\" created.");
-            AddAccount();
+            AddAccount<IAccount>();
         }
 
         public static bool RemoveCustomer()
         {
-            if (currentCustomer.FundsOwed())
+            if (currentCustomer.HasDebt())
             {
                 ConsoleUtil.DisplayWait(Properties.Resources.CannotCloseOutFundsOwed);
                 return false;
+            }
+
+
+            if (currentCustomer.HasFunds())
+            {
+                ConsoleUtil.Display(Properties.Resources.ConfirmCloseWithFunds);
+                if (!ConsoleUtil.GetConfirm()) return false;
             }
 
             ConsoleUtil.Display(Properties.Resources.AreYouSureDeleteCustomer);
@@ -197,9 +223,17 @@ namespace Project0
             else return false;
         }
 
-        public static void AddAccount()
+        public static IAccount AddAccount<TAccount>() where TAccount : IAccount
         {
-            Console.WriteLine(Properties.Resources.WhatAccountType);
+            ConsoleUtil.Display(Properties.Resources.WhatAccountType);
+            List<string> options = new List<string>();
+            foreach(var t in typeof(TAccount).Assembly.GetTypes().Where(type => type.IsAssignableFrom(typeof(TAccount))))
+            {
+                if (t.Name == "CheckingAccount") options.Add("checking");
+                else if (t.Name == "BusinessAccount") options.Add("business");
+                else if (t.Name == "Loan") options.Add("loan");
+                else if (t.Name == "TermDeposit") options.Add("cd");
+            }
             IAccount a;
             switch (ConsoleUtil.GetResponse("checking", "business", "loan", "cd"))
             {
@@ -219,25 +253,65 @@ namespace Project0
                     break;
                 default:
                     Log.Error(Properties.Resources.ErrorInvalidProgramFlow);
-                    throw new BankException();
+                    throw new Exception("Bank: Invalid program flow.");
             }
             Console.WriteLine(Properties.Resources.GiveAccountName);
-            a.Name = ConsoleUtil.GetString();
+            var name = ConsoleUtil.GetString();
+            while (currentCustomer.HasAccount(name))
+            {
+                ConsoleUtil.Display(Properties.Resources.AccountNameUnavailable);
+                name = ConsoleUtil.GetString();
+            }
+            a.Name = name;
             currentCustomer.AddAccount(a);
-            return;
+            return a;
         }
 
-        public static bool RemoveAccount(IAccount acc)
+        public static bool CloseAccount(IAccount acc)
         {
-            if (currentCustomer.AccountCount() == 1)
+            if (acc is ITerm && !((ITerm)acc).IsMature)
             {
-                ConsoleUtil.Display(Properties.Resources.DeletingFinalAccount);
-                return RemoveCustomer();
+                if (!ConsoleUtil.GetConfirm(Properties.Resources.ConfirmClosePremature))
+                    return false;
             }
             if (acc.Balance < 0)
             {
                 ConsoleUtil.DisplayWait(Properties.Resources.CannotCloseFundsOwed);
                 return false;
+            }
+            else if(acc.Balance > 0) // Help customer remove balance before closing account
+            {
+                bool exitRemoveBalance = false;
+                while (!exitRemoveBalance)
+                {
+                    Console.WriteLine(Properties.Resources.CloseRemoveFunds);
+                    List<string> options = new List<string>();
+                    if (acc is IChecking)
+                        options.Add("withdraw");
+                    if (acc is ITransfer)
+                        options.Add("transfer");
+                    options.Add("cancel");
+                    switch (ConsoleUtil.GetResponse(options))
+                    {
+                        case "withdraw":
+                            exitRemoveBalance = ConsoleUtil.PrintTransferResult(((IChecking)acc).Withdraw(acc.Balance));
+                            break;
+                        case "transfer":
+                            if (currentCustomer.AccountCount() == 1)
+                            {
+                                AddAccount<IChecking>();
+                            }
+                            exitRemoveBalance = Transfer((ITransfer)acc);
+                            break;
+                        case "cancel":
+                            return false;
+                    }
+                }
+            }
+            if (currentCustomer.AccountCount() == 1)
+            {
+                ConsoleUtil.DisplayWait(Properties.Resources.DeletingFinalAccount);
+                return RemoveCustomer();
             }
             ConsoleUtil.Display(Properties.Resources.AreYouSureDeleteAccount);
             if (ConsoleUtil.GetConfirm())
@@ -250,57 +324,68 @@ namespace Project0
 
         public static TAccount SelectAccount<TAccount>(string msg) where TAccount : IAccount
         {
-            IEnumerable<string> accNames = currentCustomer.GetAccountNames<IAccount>();
-            if (accNames.Count() == 1) return (TAccount)currentCustomer.GetAccount(accNames.First());
-            Console.WriteLine(msg);
+            List<string> accNames = currentCustomer.GetAccountNames<TAccount>();
+            if (accNames.Count() == 1) 
+                return (TAccount)currentCustomer.GetAccount(accNames.First());
+            if(!string.IsNullOrEmpty(msg)) 
+                Console.WriteLine(msg);
             return (TAccount)currentCustomer.GetAccount(ConsoleUtil.GetResponse(accNames));
         }
 
-        public static void Transfer()
+        public static bool Transfer()
         {
             if (currentCustomer.AccountCount() < 2)
             {
-                Console.WriteLine(Properties.Resources.TransferRequiresTwoAccounts);
-                return;
+                ConsoleUtil.DisplayWait(Properties.Resources.TransferRequiresTwoAccounts);
+                return false;
             }
-            // IEnumerable<string> anames = from a in accs select a.Name;
             ITransfer from = SelectAccount<ITransfer>(Properties.Resources.SelectAccountTransferFrom);
+            return Transfer(from);
+        }
+
+        public static bool Transfer(ITransfer from)
+        {
+            if (currentCustomer.AccountCount() < 2)
+            {
+                ConsoleUtil.DisplayWait(Properties.Resources.TransferRequiresTwoAccounts);
+                return false;
+            }
             currentCustomer.RemoveAccount(from);
             IAccount to = SelectAccount<IAccount>(Properties.Resources.SelectAccountTransferTo);
             currentCustomer.AddAccount(from);
+
             Console.WriteLine(Properties.Resources.TransferAmount);
             decimal amt = ConsoleUtil.GetDollarAmount();
 
-            if (!(to is IDebt) && !(to is ITransfer))
+            if (!(to is IDebt) && !(to is IChecking))
             {
-                Log.Warning("Unknown account type: " + to.GetType().ToString());
-                Console.WriteLine(Properties.Resources.IncompatibleAccount);
-                return;
+                ConsoleUtil.DisplayWait(Properties.Resources.IncompatibleAccount);
+                return false;
             }
-            else if (to is IDebt && ((IDebt)to).AmountOwed() < amt) {
+            else if (to is IDebt && !(to is IChecking) && ((IDebt)to).AmountOwed() < amt) {
                 if(!ConsoleUtil.GetConfirm(Properties.Resources.TransferNotMoreThanOwedConfirm))
                 {
-                    Console.WriteLine(Properties.Resources.OperationCancelled);
-                    return;
+                    ConsoleUtil.DisplayWait(Properties.Resources.OperationCancelled);
+                    return false;
                 }
                 amt = ((IDebt)to).AmountOwed();
             }
 
-            if (ConsoleUtil.PrintWithdrawalStatus(from.Withdraw(amt)))
+            if (ConsoleUtil.PrintTransferResult(from.TransferOut(amt)))
             {
-                if(to is ITransfer)
+                if(to is IChecking)
                 {
-                    ((ITransfer)to).Deposit(amt);
+                    ((IChecking)to).Deposit(amt);
                 } else if(to is IDebt)
                 {
                     ((IDebt)to).MakePayment(amt);
                 }
                 Console.WriteLine($"{amt} {Properties.Resources.WasTransferredSuccessfully}");
                 Console.WriteLine(Properties.Resources.OperationComplete);
-                return;
+                return true;
             }
-
-            Console.WriteLine(Properties.Resources.TransferWithdrawalFailed);
+            ConsoleUtil.DisplayWait(Properties.Resources.TransferWithdrawalFailed);
+            return false;
         }
     }
 }

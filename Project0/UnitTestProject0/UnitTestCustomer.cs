@@ -9,6 +9,7 @@ namespace UnitTestProject0
         [TestMethod]
         public void TestPasswordHash()
         {
+            UnitTestSetup.SetupTesting();
             var pass = "password";
             Customer c = new Customer("user", pass);
             Assert.IsTrue(c.Login(pass));

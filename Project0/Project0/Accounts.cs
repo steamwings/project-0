@@ -1,4 +1,5 @@
-﻿using static Project0.ITransfer;
+﻿using System.Collections.Generic;
+using static Project0.ITransfer;
 
 namespace Project0
 {
@@ -8,10 +9,12 @@ namespace Project0
         public string Name { get; set; }
         //protected DollarAmount Balance { get; protected set; } = new DollarAmount();
         public decimal Balance { get; set; }
-
-        public Account(int id)
+        public List<Transaction> Transactions { get; } = new List<Transaction>();
+        
+        protected Account(int id)
         {
             ID = id;
+            Transactions.Add(new Transaction(TransactionType.OpenAccount));
         }
 
         public virtual string Info()
@@ -20,28 +23,32 @@ namespace Project0
         }
     }
 
-    public abstract class BasicTransferAccount : Account, ITransfer
-    {
-        public BasicTransferAccount(int id) : base(id) { }
-        public virtual void Deposit(decimal amount)
-        {
-            Balance += amount;
-        }
-        public abstract WithdrawalResult Withdraw(decimal amt);
-    }
-
-    public class CheckingAccount : BasicTransferAccount
+    public class CheckingAccount : Account, IChecking
     {
         public CheckingAccount(int id) : base(id) { }
 
-        public override WithdrawalResult Withdraw(decimal amount)
+        public virtual void Deposit(decimal amount)
         {
-            if (Balance < amount) return WithdrawalResult.InsufficientFunds;
+            Transactions.Add(new Transaction(TransactionType.Deposit, amount));
+            Balance += amount;
+        }
+
+        public TransferResult TransferOut(decimal amount)
+        {
+            return Withdraw(amount);
+        }
+
+        public virtual TransferResult Withdraw(decimal amount)
+        {
+            TransferResult res;
+            if (Balance < amount) res = TransferResult.InsufficientFunds;
             else
             {
                 Balance -= amount;
-                return WithdrawalResult.SuccessNoBorrow;
+                res = TransferResult.SuccessNoBorrow;
             }
+            Transactions.Add(new Transaction(TransactionType.TransferOutOf, amount, res));
+            return res;
         }
     }
 
@@ -61,16 +68,17 @@ namespace Project0
             else return (0 - Balance);
         }
 
-        public override WithdrawalResult Withdraw(decimal amount)
+        public override TransferResult Withdraw(decimal amount)
         {
-            WithdrawalResult res = WithdrawalResult.SuccessNoBorrow;
+            TransferResult res = TransferResult.SuccessNoBorrow;
             decimal diff = Balance - amount;
             if(diff < 0)
             {
                 Balance -= (diff * Bank.InterestRate);
-                res = WithdrawalResult.SuccessBorrowing;
+                res = TransferResult.SuccessBorrowing;
             }
             Balance -= amount;
+            Transactions.Add(new Transaction(TransactionType.TransferOutOf, amount, res));
             return res;
         }
     }
@@ -85,21 +93,22 @@ namespace Project0
 
         public decimal AmountOwed()
         {
-            return Balance;
+            return -Balance;
         }
 
         public bool MakePayment(decimal amount)
         {
-            if(Balance < 0 && (Balance + amount) <= 0 )
+            if(Balance < 0 && (Balance + amount) <= 0)
             {
                 Balance += amount;
+                Transactions.Add(new Transaction(TransactionType.Payment, amount));
                 return true;
             }
             return false;
         }
     }
 
-    public class TermDeposit : BasicTransferAccount
+    public class TermDeposit : Account, ITerm
     {
         public bool IsMature { get; } = false;
         public TermDeposit(int id, decimal amount) : base(id)
@@ -108,19 +117,25 @@ namespace Project0
         }
         public override string Info()
         {
-            return base.Info() + (IsMature ? "Maturation reached." : "Maturation date has not been reached.");
+            return base.Info() + (IsMature ? "(Maturation reached.)" : "(Maturation date has not been reached.)");
         }
 
-        public override WithdrawalResult Withdraw(decimal amt)
+        public virtual TransferResult TransferOut(decimal amt)
         {
+            TransferResult res;
             if (!IsMature)
             {
-                return WithdrawalResult.ImmatureFunds;
+                res = TransferResult.ImmatureFunds;
             } else if(Balance < amt){
-                return WithdrawalResult.InsufficientFunds;
+                res = TransferResult.InsufficientFunds;
             }
-            Balance -= amt;
-            return WithdrawalResult.SuccessNoBorrow;
+            else
+            {
+                Balance -= amt;
+                res = TransferResult.SuccessNoBorrow;
+            }
+            Transactions.Add(new Transaction(TransactionType.TransferOutOf, amt, res));
+            return res;
         }
     }
     

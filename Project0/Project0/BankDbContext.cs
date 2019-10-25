@@ -12,7 +12,7 @@ namespace Project0
             }
         }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Account> Account { get; set; }
+        public DbSet<IAccount> Account { get; set; }
 //        public DbSet<Transaction> Transaction { get; set; }
     }
 }

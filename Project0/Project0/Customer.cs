@@ -17,7 +17,7 @@ namespace Project0
         public Customer(string uname, string password)
         {
             Username = uname;
-            (new Random()).NextBytes(Salt); //TODO Should be done in DB
+            (new Random()).NextBytes(Salt); //P1TODO Should be done in DB
             PasswordHash = GetHash(password);
         }
 
@@ -64,11 +64,20 @@ namespace Project0
             return info.ToString();
         }
         
-        public bool FundsOwed()
+        public bool HasDebt()
         {
             foreach(IAccount a in accounts)
             {
                 if (a.Balance < 0) return true;
+            }
+            return false;
+        }
+
+        public bool HasFunds()
+        {
+            foreach (IAccount a in accounts)
+            {
+                if (a.Balance > 0) return true;
             }
             return false;
         }
@@ -78,9 +87,15 @@ namespace Project0
             return ((IEnumerable<TAccount>) accounts.Where(a => a is TAccount)).ToList();
         }
 
-        public IEnumerable<string> GetAccountNames<TAccount>()
+        public List<string> GetAccountNames<TAccount>()
         {
-            return from a in accounts where a is TAccount select a.Name;
+            return (from a in accounts where a is TAccount select a.Name).ToList();
+        }
+
+        public bool HasAccount(string name)
+        {
+            if (name == null) return false;
+            return accounts.Where(a => a.Name == name).Any();
         }
 
         public IAccount GetAccount(string name)
