@@ -295,11 +295,29 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select an account..
+        ///   Looks up a localized string similar to Please select an account to transfer from..
         /// </summary>
-        internal static string SelectAccount {
+        internal static string SelectAccountTransferFrom {
             get {
-                return ResourceManager.GetString("SelectAccount", resourceCulture);
+                return ResourceManager.GetString("SelectAccountTransferFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select an account to transfer into..
+        /// </summary>
+        internal static string SelectAccountTransferTo {
+            get {
+                return ResourceManager.GetString("SelectAccountTransferTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select an account to view..
+        /// </summary>
+        internal static string SelectAccountView {
+            get {
+                return ResourceManager.GetString("SelectAccountView", resourceCulture);
             }
         }
         

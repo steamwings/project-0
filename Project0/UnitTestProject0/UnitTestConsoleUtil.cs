@@ -8,7 +8,7 @@ namespace UnitTestProject0
 {
     class HelperMethods
     {
-        public static bool TestGetDollarAmount(string input, double exp)
+        public static bool TestGetDollarAmount(string input, decimal exp)
         {
             Log.Information($"TestGetDollarAmount\ninput:{input}|exp:{exp}");
             Console.SetOut(new StringWriter());
@@ -18,7 +18,7 @@ namespace UnitTestProject0
     }
 
     [TestClass]
-    public class PositiveUnitTestsMethods
+    public class UnitTestConsoleUtil
     {
         [TestMethod]
         public void TestGetDollarAmountBasic()
@@ -31,7 +31,7 @@ namespace UnitTestProject0
         public void TestGetDollarAmountFraction()
         {
             UnitTestSetup.SetupTesting();
-            Assert.IsTrue(HelperMethods.TestGetDollarAmount("45.55", 45.55));
+            Assert.IsTrue(HelperMethods.TestGetDollarAmount("45.55", 45.55M));
         }
         [TestMethod]
         public void TestGetPass()
@@ -39,19 +39,9 @@ namespace UnitTestProject0
             UnitTestSetup.SetupTesting();
             Log.Information($"TestGetPass\n");
             Console.SetOut(new StringWriter());
-            Console.SetIn(new StringReader(""));
+            Console.SetIn(new StringReader("pass"));
+            Assert.IsTrue("pass" == ConsoleUtil.GetPass(4));
         }
 
-    }
-
-    [TestClass]
-    public class NegativeUnitTestsMethods
-    {
-        [TestMethod]
-        public void TestGetDollarAmount()
-        {
-            UnitTestSetup.SetupTesting();
-            Assert.IsTrue(HelperMethods.TestGetDollarAmount("45.555", 45.56));
-        }
     }
 }

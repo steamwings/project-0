@@ -195,8 +195,14 @@
   <data name="PressAnyKey" xml:space="preserve">
     <value>Press any key to continue...</value>
   </data>
-  <data name="SelectAccount" xml:space="preserve">
-    <value>Please select an account.</value>
+  <data name="SelectAccountTransferFrom" xml:space="preserve">
+    <value>Please select an account to transfer from.</value>
+  </data>
+  <data name="SelectAccountTransferTo" xml:space="preserve">
+    <value>Please select an account to transfer into.</value>
+  </data>
+  <data name="SelectAccountView" xml:space="preserve">
+    <value>Please select an account to view.</value>
   </data>
   <data name="ServiceUnavailable" xml:space="preserve">
     <value>An unexpected error occurred. This service is temporarily unavailable.</value>

@@ -2,7 +2,7 @@
 
 namespace Project0
 {
-    public class MyDbContext : DbContext
+    public class BankDbContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -13,5 +13,6 @@ namespace Project0
         }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Account> Account { get; set; }
+//        public DbSet<Transaction> Transaction { get; set; }
     }
 }

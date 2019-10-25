@@ -23,18 +23,18 @@ namespace Project0
     public abstract class BasicTransferAccount : Account, ITransfer
     {
         public BasicTransferAccount(int id) : base(id) { }
-        public virtual void Deposit(int amount)
+        public virtual void Deposit(decimal amount)
         {
             Balance += amount;
         }
-        public abstract WithdrawalResult Withdraw(int amt);
+        public abstract WithdrawalResult Withdraw(decimal amt);
     }
 
     public class CheckingAccount : BasicTransferAccount
     {
         public CheckingAccount(int id) : base(id) { }
 
-        public override WithdrawalResult Withdraw(int amount)
+        public override WithdrawalResult Withdraw(decimal amount)
         {
             if (Balance < amount) return WithdrawalResult.InsufficientFunds;
             else
@@ -49,25 +49,25 @@ namespace Project0
     {
         public BusinessAccount(int id) : base(id){}
 
-        public bool MakePayment(int payment)
+        public bool MakePayment(decimal payment)
         {
             Deposit(payment);
             return true;
         }
 
-        public int AmountOwed()
+        public decimal AmountOwed()
         {
             if (Balance >= 0) return 0;
             else return (0 - Balance);
         }
 
-        public override WithdrawalResult Withdraw(int amount)
+        public override WithdrawalResult Withdraw(decimal amount)
         {
             WithdrawalResult res = WithdrawalResult.SuccessNoBorrow;
-            double diff = Balance - amount;
+            decimal diff = Balance - amount;
             if(diff < 0)
             {
-                Balance -= (int)(diff * Bank.InterestRate);
+                Balance -= (diff * Bank.InterestRate);
                 res = WithdrawalResult.SuccessBorrowing;
             }
             Balance -= amount;
@@ -77,18 +77,18 @@ namespace Project0
 
     public class Loan : Account, IDebt
     {
-        public Loan(int id, int amount) : base(id)
+        public Loan(int id, decimal amount) : base(id)
         {
             // Negative balance indicates amount owed
             Balance -= amount;
         }
 
-        public int AmountOwed()
+        public decimal AmountOwed()
         {
             return Balance;
         }
 
-        public bool MakePayment(int amount)
+        public bool MakePayment(decimal amount)
         {
             if(Balance < 0 && (Balance + amount) <= 0 )
             {
@@ -102,7 +102,7 @@ namespace Project0
     public class TermDeposit : BasicTransferAccount
     {
         public bool IsMature { get; } = false;
-        public TermDeposit(int id, int amount) : base(id)
+        public TermDeposit(int id, decimal amount) : base(id)
         {
             Balance += amount;
         }
@@ -111,7 +111,7 @@ namespace Project0
             return base.Info() + (IsMature ? "Maturation reached." : "Maturation date has not been reached.");
         }
 
-        public override WithdrawalResult Withdraw(int amt)
+        public override WithdrawalResult Withdraw(decimal amt)
         {
             if (!IsMature)
             {

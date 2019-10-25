@@ -2,10 +2,10 @@
 {
     public interface IAccount
     {
-        //bool Active { get; } //TODO
         int ID { get; }
         string Name { get; set; }
         decimal Balance { get; set; }
+        //bool Active { get; } //TODO
         string Info();
     }
 

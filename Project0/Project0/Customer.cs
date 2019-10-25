@@ -10,7 +10,7 @@ namespace Project0
     {
         private static readonly int SALT_LENGTH = 32;
         public string Username { get; protected set; }
-        private byte[] PasswordHash { get; set; } //TODO
+        private byte[] PasswordHash { get; set; }
         private byte[] Salt { get; set; } = new byte[SALT_LENGTH];
         private readonly List<IAccount> accounts = new List<IAccount>();
 

@@ -12,7 +12,7 @@ namespace Project0
         private static Customer currentCustomer;
         private static List<Customer> customers = new List<Customer>();
 
-        public static double InterestRate { get; private set; }
+        public static decimal InterestRate { get; private set; }
 
         public static void Main()
         {
@@ -36,49 +36,14 @@ namespace Project0
                     while (true) // User logged in loop
                     {
                         bool exitLoggedIn = false;
-                        ConsoleUtil.Display(Properties.Resources.MainMenuOptions);
+                        Console.Clear();
                         Console.WriteLine(currentCustomer.DisplayAllAccounts());
+                        Console.WriteLine(Properties.Resources.MainMenuOptions);
                         var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "exit");
                         switch (r)
                         {
                             case "view":
-                                bool exitViewAccount = false;
-                                IAccount acc = SelectAccount<IAccount>();
-                                List<string> options = new List<string>();
-                                if (acc is IDebt && (((IDebt)acc).AmountOwed() > 0))
-                                {
-                                    options.Add("payment");
-                                }
-                                if (acc is ITransfer)
-                                {
-                                    options.Add("deposit");
-                                    options.Add("withdraw");
-                                }
-                                options.Add("return");
-                                while (!exitViewAccount) // Viewing account loop
-                                {
-                                    bool success = true;
-                                    Console.WriteLine(acc.Info());
-                                    switch (ConsoleUtil.GetResponse(options))
-                                    {
-                                        case "payment":
-                                            success = ((IDebt)acc).MakePayment(ConsoleUtil.GetDollarAmount());
-                                            break;
-                                        case "deposit":
-                                            ((ITransfer)acc).Deposit(ConsoleUtil.GetDollarAmount());
-                                            break;
-                                        case "withdraw":
-                                            success = ConsoleUtil.PrintWithdrawalStatus(((ITransfer)acc).Withdraw(ConsoleUtil.GetDollarAmount()));
-                                            break;
-                                        case "close":
-                                            exitViewAccount = success = RemoveAccount(acc);
-                                            break;
-                                        default:
-                                            exitViewAccount = true;
-                                            break;
-                                    }
-                                    ConsoleUtil.PrintOperationStatus(success);
-                                }
+                                View();
                                 break;
                             case "new":
                                 AddAccount();
@@ -107,23 +72,68 @@ namespace Project0
                 ConsoleUtil.Display(Properties.Resources.ServiceUnavailable);
                 Log.Error("Unexpected error.", e);
             }
-            Log.CloseAndFlush();
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static bool Login()
         {
             ConsoleUtil.Display(Properties.Resources.Welcome + "\n\n");
             Console.WriteLine(Properties.Resources.ExistingAccountOrRegister);
-            var r = ConsoleUtil.GetResponse("login", "register","exit");
-            if(r == "login")
+            var r = ConsoleUtil.GetResponse("login", "register");
+            if (r == "login")
             {
                 return LoginCustomer();
-            } else if(r == "register")
+            }
+            else if (r == "register")
             {
                 CreateCustomer();
                 return true;
             }
             return false;
+        }
+
+        public static void View()
+        {
+            bool exitViewAccount = false;
+            IAccount acc = SelectAccount<IAccount>(Properties.Resources.SelectAccountView);
+            List<string> options = new List<string>();
+            if (acc is IDebt && (((IDebt)acc).AmountOwed() > 0))
+            {
+                options.Add("payment");
+            }
+            if (acc is ITransfer)
+            {
+                options.Add("deposit");
+                options.Add("withdraw");
+            }
+            options.Add("return");
+            while (!exitViewAccount) // Viewing account loop
+            {
+                bool success = true;
+                ConsoleUtil.Display(acc.Info());
+                switch (ConsoleUtil.GetResponse(options))
+                {
+                    case "payment":
+                        success = ((IDebt)acc).MakePayment(ConsoleUtil.GetDollarAmount());
+                        break;
+                    case "deposit":
+                        ((ITransfer)acc).Deposit(ConsoleUtil.GetDollarAmount());
+                        break;
+                    case "withdraw":
+                        success = ConsoleUtil.PrintWithdrawalStatus(((ITransfer)acc).Withdraw(ConsoleUtil.GetDollarAmount()));
+                        break;
+                    case "close":
+                        exitViewAccount = success = RemoveAccount(acc);
+                        break;
+                    default:
+                        exitViewAccount = true;
+                        break;
+                }
+                ConsoleUtil.PrintOperationStatus(success);
+            }
         }
 
         public static bool LoginCustomer()
@@ -238,11 +248,11 @@ namespace Project0
             return true;
         }
 
-        public static TAccount SelectAccount<TAccount>() where TAccount : IAccount
+        public static TAccount SelectAccount<TAccount>(string msg) where TAccount : IAccount
         {
             IEnumerable<string> accNames = currentCustomer.GetAccountNames<IAccount>();
             if (accNames.Count() == 1) return (TAccount)currentCustomer.GetAccount(accNames.First());
-            Console.WriteLine(Properties.Resources.SelectAccount);
+            Console.WriteLine(msg);
             return (TAccount)currentCustomer.GetAccount(ConsoleUtil.GetResponse(accNames));
         }
 
@@ -254,12 +264,12 @@ namespace Project0
                 return;
             }
             // IEnumerable<string> anames = from a in accs select a.Name;
-            ITransfer from = SelectAccount<ITransfer>();
+            ITransfer from = SelectAccount<ITransfer>(Properties.Resources.SelectAccountTransferFrom);
             currentCustomer.RemoveAccount(from);
-            IAccount to = SelectAccount<IAccount>();
+            IAccount to = SelectAccount<IAccount>(Properties.Resources.SelectAccountTransferTo);
             currentCustomer.AddAccount(from);
             Console.WriteLine(Properties.Resources.TransferAmount);
-            int amt = ConsoleUtil.GetDollarAmount();
+            decimal amt = ConsoleUtil.GetDollarAmount();
 
             if (!(to is IDebt) && !(to is ITransfer))
             {

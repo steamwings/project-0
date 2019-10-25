@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Project0.ITransfer;
 
 namespace Project0
@@ -23,18 +24,17 @@ namespace Project0
             GetAnyKey();
         }
 
-        public static int GetDollarAmount()
+        public static decimal GetDollarAmount()
         {
-            //var rg = new Regex(@"^\d{0,14}(.00)?$");
-            Console.Write(Properties.Resources.EnterDollarAmount + " ");
+            var rg = new Regex(@"^\d{0,14}(.\d\d)?$");
+            Console.Write(Properties.Resources.EnterDollarAmount + " $");
             var resp = Console.ReadLine();
-            int amt;
-            while (!int.TryParse(resp, out amt)/* || !rg.IsMatch(resp)*/)
+            while (!rg.IsMatch(resp))
             {
                 Console.WriteLine(Properties.Resources.ValidAmount);
                 resp = Console.ReadLine();
             }
-            return amt;
+            return Decimal.Parse(resp);
         }
 
         public static void PrintOperationStatus(bool success)
@@ -123,12 +123,21 @@ namespace Project0
             StringBuilder s = new StringBuilder();
             while (true)
             {
-                var c = Console.ReadKey();
-                if (c.Key == ConsoleKey.Enter)
-                    break;
+                var c = Console.ReadKey(true);
+                if (c.Key == ConsoleKey.Enter) break;
                 else if (c.Key == ConsoleKey.Backspace)
-                    s.Remove(s.Length - 1, 1);
-                else s.Append(c);
+                {
+                    if (s.Length > 0)
+                    {
+                        Console.Write("\b\x1B[1P");
+                        s.Remove(s.Length - 1, 1);
+                    }
+                }
+                else
+                {
+                    Console.Write('*');
+                    s.Append(c.KeyChar);
+                }
             }
             return s.ToString() ;
         }
