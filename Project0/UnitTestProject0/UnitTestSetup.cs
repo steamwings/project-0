@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
+using Serilog.Exceptions;
 using System.Diagnostics;
 
 namespace UnitTestProject0
@@ -13,12 +14,12 @@ namespace UnitTestProject0
             if (setup) return;
             Log.Logger = new LoggerConfiguration() // Initialize Serilog
             .MinimumLevel.Debug()
-            //.WriteTo.Console()
+            //.MinimumLevel.Verbose()
+            .Enrich.WithExceptionDetails()
             .WriteTo.File("C:\\git\\Project0\\logs\\bank-test.log", rollingInterval: RollingInterval.Infinite)
             .CreateLogger();
             Log.Information("Log created.");
-            //Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
-            Debug.WriteLine("Log created?");
+            Debug.WriteLine("Debug: Log created.");
             setup = true;
         }
     }

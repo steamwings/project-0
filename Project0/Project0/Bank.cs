@@ -1,11 +1,12 @@
 ﻿using Serilog;
+using Serilog.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project0
 {
-    public class Bank
+    public sealed class Bank
     {
         private static readonly int minPassLen = 5;
         private static int nextAccountId = 1;
@@ -22,8 +23,9 @@ namespace Project0
             .MinimumLevel.Debug()
             .WriteTo.Console()
 #else
-            .MinimumLevel.Information()
+            .MinimumLevel.Information() //default
 #endif
+            .Enrich.WithExceptionDetails()
             .WriteTo.File("C:\\ProgramData\\Temp\\Bank\\logs\\bank.log", rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
@@ -71,7 +73,7 @@ namespace Project0
             catch (Exception e)
             {
                 ConsoleUtil.Display(Properties.Resources.ServiceUnavailable);
-                Log.Error("Unexpected error.", e);
+                Log.Error(e, "Unexpected error!");
             }
             finally
             {

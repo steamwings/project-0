@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using static Project0.ITransfer;
 
 namespace Project0
 {

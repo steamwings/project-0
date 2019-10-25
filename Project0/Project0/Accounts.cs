@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using static Project0.ITransfer;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Project0
 {
@@ -9,8 +9,17 @@ namespace Project0
         public string Name { get; set; }
         //protected DollarAmount Balance { get; protected set; } = new DollarAmount();
         public decimal Balance { get; set; }
+        public DateTime Updated { get; set; }
         public List<Transaction> Transactions { get; } = new List<Transaction>();
         
+        public bool CompoundInterest(decimal rate)
+        {
+            int months = DateTime.Now.GetTotalMonthsFrom(Updated);
+            if (months == 0) return false;
+
+            return true;
+        }
+
         protected Account(int id)
         {
             ID = id;

@@ -39,6 +39,7 @@ namespace Project0
             while (!rg.IsMatch(resp))
             {
                 Console.WriteLine(Properties.Resources.ValidAmount);
+                Console.Write("$");
                 resp = Console.ReadLine();
             }
             return Decimal.Parse(resp);
