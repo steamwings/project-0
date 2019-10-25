@@ -21,3 +21,16 @@ C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.D
 C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Logging.dll
 C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Options.dll
 C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Primitives.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Serilog.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Serilog.Sinks.File.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Serilog.Sinks.Console.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\System.Data.SqlClient.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\runtimes\win-arm64\native\sni.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\runtimes\win-x64\native\sni.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\runtimes\win-x86\native\sni.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.EntityFrameworkCore.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\git\Project0\Project0\Project0\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Caching.Memory.dll

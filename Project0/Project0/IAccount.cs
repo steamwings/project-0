@@ -1,21 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Project0
+﻿namespace Project0
 {
     public interface IAccount
     {
-        public int ID { get; }
-        public string Name { get; set; }
-        public double Balance { get; }
-        public void DisplayInfo();
-
+        //bool Active { get; } //TODO
+        int ID { get; }
+        string Name { get; set; }
+        decimal Balance { get; set; }
+        string Info();
     }
 
-    public interface IDebt : IAccount
+    // Accounts you can transfer from
+    public interface ITransfer : IAccount
     {
-        public bool MakePayment(int payment);
-        public double AmountOwed();
+        enum WithdrawalResult
+        {
+            SuccessNoBorrow,
+            SuccessBorrowing,
+            InsufficientFunds,
+            ImmatureFunds
+        }
+
+        WithdrawalResult Withdraw(decimal amt);
+        void Deposit(decimal amt);
+    }
+
+    // Accounts you can owe money on
+    public interface IDebt : IAccount
+    { 
+        bool MakePayment(decimal payment);
+        decimal AmountOwed();
     }
 }

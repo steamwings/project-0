@@ -1,20 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Project0
 {
     public class Customer
     {
-        public string Username { get; set; }
-        private List<IAccount> accounts = new List<IAccount>();
+        private static readonly int SALT_LENGTH = 32;
+        public string Username { get; protected set; }
+        private byte[] PasswordHash { get; set; } //TODO
+        private byte[] Salt { get; set; } = new byte[SALT_LENGTH];
+        private readonly List<IAccount> accounts = new List<IAccount>();
 
-        public Customer(string uname)
+        public Customer(string uname, string password)
         {
             Username = uname;
+            (new Random()).NextBytes(Salt); //TODO Should be done in DB
+            PasswordHash = GetHash(password);
         }
 
+        public bool Login(string password)
+        {
+            return Encoding.UTF8.GetString(PasswordHash) == Encoding.UTF8.GetString(GetHash(password));
+        }
+
+        private byte[] GetHash(string s)
+        {
+            s += Encoding.UTF8.GetString(Salt);
+            byte[] hash;
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(s));
+            }
+            return hash;
+        }
+
+        public int AccountCount()
+        {
+            return accounts.Count();
+        }
         public void AddAccount(IAccount a)
         {
             accounts.Add(a);
@@ -26,17 +52,16 @@ namespace Project0
 
         public void RemoveAllAccounts()
         {
-            foreach(IAccount a in accounts)
-            {
-                RemoveAccount(a);
-            }
+            accounts.Clear();
         }
-        public void DisplayAllAccounts()
+        public string DisplayAllAccounts()
         {
+            StringBuilder info = new StringBuilder();
             foreach(IAccount a in accounts)
             {
-                a.DisplayInfo();
+                info.Append(a.Info());
             }
+            return info.ToString();
         }
         
         public bool FundsOwed()
@@ -48,14 +73,14 @@ namespace Project0
             return false;
         }
 
-        public IEnumerable<CheckingAccount> GetCheckingAccounts()
+        public List<TAccount> GetAccounts<TAccount>() where TAccount : IAccount
         {
-            return (IEnumerable<CheckingAccount>) accounts.Where(a => a is CheckingAccount);
+            return ((IEnumerable<TAccount>) accounts.Where(a => a is TAccount)).ToList();
         }
 
-        public IEnumerable<string> GetAccountNames()
+        public IEnumerable<string> GetAccountNames<TAccount>()
         {
-            return from a in accounts select a.Name;
+            return from a in accounts where a is TAccount select a.Name;
         }
 
         public IAccount GetAccount(string name)

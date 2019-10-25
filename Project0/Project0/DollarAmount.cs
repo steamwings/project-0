@@ -10,7 +10,7 @@ namespace Project0
 
     }
 
-    public class DollarAmount
+    public class DollarAmount //TODO
     {
 
         private static Regex rg = new Regex(@"^\d{0,14}(.00)?$");

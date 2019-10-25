@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,158 +7,187 @@ namespace Project0
 {
     public class Bank
     {
+        private static readonly int minPassLen = 5;
         private static int nextAccountId = 1;
         private static Customer currentCustomer;
         private static List<Customer> customers = new List<Customer>();
-        private static ILogger<Bank> logger = (new LoggerFactory()).CreateLogger<Bank>();
+
         public static double InterestRate { get; private set; }
 
         public static void Main()
         {
-            logger.LogInformation("Bank console program started.");
+            Log.Logger = new LoggerConfiguration() // Initialize Serilog
+#if DEBUG
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+#else
+            .MinimumLevel.Information()
+#endif
+            .WriteTo.File("C:\\ProgramData\\Temp\\Bank\\logs\\bank.log", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
+            Log.Information("Bank console program started.");
             try
             {
-                while (true) // Main loop, no user logged-in
+                while (true) // Outermost loop
                 {
-                    Display(Properties.Resources.Welcome + "\n\n");
-                    if (Login())
+                    while (!Login()) ;
+
+                    while (true) // User logged in loop
                     {
-                        while (true) // Main loop, user logged in
+                        bool exitLoggedIn = false;
+                        ConsoleUtil.Display(Properties.Resources.MainMenuOptions);
+                        Console.WriteLine(currentCustomer.DisplayAllAccounts());
+                        var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "exit");
+                        switch (r)
                         {
-                            bool exit = false;
-                            Display(Properties.Resources.MainMenuOptions);
-                            var r = ConsoleUtil.GetResponse("view", "new", "transfer", "exit");
-                            switch (r)
-                            {
-                                case "view":
-                                    currentCustomer.DisplayAllAccounts();
-                                    IAccount acc = SelectAccount();
-                                    List<string> options = new List<string>();
-                                    options.Add("exit");
-                                    if (acc is IDebt)
-                                    {
-                                        options.Add("payment");
-                                    }
-                                    if (acc is CheckingAccount)
-                                    {
-                                        options.Add("deposit");
-                                        options.Add("withdrawal");
-                                    }
+                            case "view":
+                                bool exitViewAccount = false;
+                                IAccount acc = SelectAccount<IAccount>();
+                                List<string> options = new List<string>();
+                                if (acc is IDebt && (((IDebt)acc).AmountOwed() > 0))
+                                {
+                                    options.Add("payment");
+                                }
+                                if (acc is ITransfer)
+                                {
+                                    options.Add("deposit");
+                                    options.Add("withdraw");
+                                }
+                                options.Add("return");
+                                while (!exitViewAccount) // Viewing account loop
+                                {
+                                    bool success = true;
+                                    Console.WriteLine(acc.Info());
                                     switch (ConsoleUtil.GetResponse(options))
                                     {
                                         case "payment":
+                                            success = ((IDebt)acc).MakePayment(ConsoleUtil.GetDollarAmount());
                                             break;
                                         case "deposit":
+                                            ((ITransfer)acc).Deposit(ConsoleUtil.GetDollarAmount());
                                             break;
-                                        case "withdrawal":
+                                        case "withdraw":
+                                            success = ConsoleUtil.PrintWithdrawalStatus(((ITransfer)acc).Withdraw(ConsoleUtil.GetDollarAmount()));
+                                            break;
+                                        case "close":
+                                            exitViewAccount = success = RemoveAccount(acc);
+                                            break;
+                                        default:
+                                            exitViewAccount = true;
                                             break;
                                     }
-                                    break;
-                                case "new":
-                                    AddAccount();
-                                    break;
-                                case "transfer":
-                                    Transfer();
-                                    break;
-                                default:
-                                    exit = true;
-                                    break;
-                            }
-                            if(exit) break;
+                                    ConsoleUtil.PrintOperationStatus(success);
+                                }
+                                break;
+                            case "new":
+                                AddAccount();
+                                break;
+                            case "transfer":
+                                Transfer();
+                                break;
+                            case "close":
+                                if (RemoveCustomer()) exitLoggedIn = true;
+                                break;
+                            case "exit":
+                                exitLoggedIn = true;
+                                break;
+                            default:
+                                break;
                         }
-                        currentCustomer = null;
-                        DisplayWait(Properties.Resources.Goodbye);
+                        if (exitLoggedIn) break;
                     }
+                    currentCustomer = null;
+                    ConsoleUtil.DisplayWait(Properties.Resources.Goodbye);
                 }
+                
             }
             catch (Exception e)
             {
-                Display(Properties.Resources.ServiceUnavailable);
-                logger.LogError("Unexpected error.", e);
+                ConsoleUtil.Display(Properties.Resources.ServiceUnavailable);
+                Log.Error("Unexpected error.", e);
             }
-        }
-
-        public static void Display(string s)
-        {
-            Display(s, 0);
-        }
-        public static void DisplayWait(string s)
-        {
-            Display(s, 2000);
-        }
-
-        public static void Display(string s, int waitMs)
-        {
-            Console.Clear();
-            Console.WriteLine(s);
-            System.Threading.Thread.Sleep(waitMs);
+            Log.CloseAndFlush();
         }
 
         public static bool Login()
         {
-            Display(Properties.Resources.ExistingAccountOrRegister);
+            ConsoleUtil.Display(Properties.Resources.Welcome + "\n\n");
+            Console.WriteLine(Properties.Resources.ExistingAccountOrRegister);
             var r = ConsoleUtil.GetResponse("login", "register","exit");
             if(r == "login")
             {
                 return LoginCustomer();
             } else if(r == "register")
             {
-                return CreateCustomer();
+                CreateCustomer();
+                return true;
             }
             return false;
         }
 
         public static bool LoginCustomer()
         {
-            Display(Properties.Resources.EnterUsername);
+            ConsoleUtil.Display(Properties.Resources.EnterUsername);
             var uname = ConsoleUtil.GetString();
             var matches = from c in customers where c.Username == uname select c;
 
             if (matches.Count() != 1)
             {
-                DisplayWait(Properties.Resources.UserNotFound);
+                ConsoleUtil.DisplayWait(Properties.Resources.UserNotFound);
                 return false;
             }
             else
             {
-                currentCustomer = matches.Single();
+                Customer c = matches.Single();
+                ConsoleUtil.Display(Properties.Resources.EnterPassword);
+                int tries = 3;
+                while(!c.Login(ConsoleUtil.GetPass(minPassLen)))
+                {
+                    if (--tries == 0) return false;
+                    Console.WriteLine(Properties.Resources.PasswordIncorrect);
+                }
+                currentCustomer = c;
                 return true;
             }
         }
 
-        public static bool CreateCustomer()
+        public static void CreateCustomer()
         {
-            Display(Properties.Resources.CreateUsername);
+            ConsoleUtil.Display(Properties.Resources.CreateUsername);
             var uname = ConsoleUtil.GetString();
             while(customers.Where(c=> c.Username == uname).Any())
             {
-                Display(Properties.Resources.UsernameUnavailable);
+                ConsoleUtil.Display(Properties.Resources.UsernameUnavailable);
                 uname = ConsoleUtil.GetString();
             }
-            currentCustomer = new Customer(uname);
+            ConsoleUtil.Display(Properties.Resources.CreatePassword);
+            currentCustomer = new Customer(uname, ConsoleUtil.GetPass(minPassLen));
             customers.Add(currentCustomer);
-            logger.LogInformation($"Customer {uname} created.");
-            return AddAccount();
+            Log.Information($"Customer \"{uname}\" created.");
+            AddAccount();
         }
 
         public static bool RemoveCustomer()
         {
             if (currentCustomer.FundsOwed())
             {
-                DisplayWait(Properties.Resources.CannotCloseOutFundsOwed);
+                ConsoleUtil.DisplayWait(Properties.Resources.CannotCloseOutFundsOwed);
                 return false;
             }
 
-            Display(Properties.Resources.AreYouSureDeleteCustomer);
+            ConsoleUtil.Display(Properties.Resources.AreYouSureDeleteCustomer);
             if (ConsoleUtil.GetConfirm())
             {
                 currentCustomer.RemoveAllAccounts();
+                Log.Information($"Customer \"{currentCustomer.Username}\" deleted.");
+                customers.Remove(currentCustomer);
                 return true;
             }
             else return false;
         }
 
-        public static bool AddAccount()
+        public static void AddAccount()
         {
             Console.WriteLine(Properties.Resources.WhatAccountType);
             IAccount a;
@@ -179,23 +208,28 @@ namespace Project0
                     a = new TermDeposit(nextAccountId++, ConsoleUtil.GetDollarAmount());
                     break;
                 default:
-                    logger.LogError(Properties.Resources.ErrorInvalidProgramFlow);
-                    return false;
+                    Log.Error(Properties.Resources.ErrorInvalidProgramFlow);
+                    throw new BankException();
             }
-            Display(Properties.Resources.GiveAccountName);
+            Console.WriteLine(Properties.Resources.GiveAccountName);
             a.Name = ConsoleUtil.GetString();
             currentCustomer.AddAccount(a);
-            return true;
+            return;
         }
 
         public static bool RemoveAccount(IAccount acc)
         {
-            if(acc.Balance < 0)
+            if (currentCustomer.AccountCount() == 1)
             {
-                DisplayWait(Properties.Resources.CannotCloseFundsOwed);
+                ConsoleUtil.Display(Properties.Resources.DeletingFinalAccount);
+                return RemoveCustomer();
+            }
+            if (acc.Balance < 0)
+            {
+                ConsoleUtil.DisplayWait(Properties.Resources.CannotCloseFundsOwed);
                 return false;
             }
-            Display(Properties.Resources.AreYouSureDeleteAccount);
+            ConsoleUtil.Display(Properties.Resources.AreYouSureDeleteAccount);
             if (ConsoleUtil.GetConfirm())
             {
                 currentCustomer.RemoveAccount(acc);
@@ -204,16 +238,59 @@ namespace Project0
             return true;
         }
 
-        public static IAccount SelectAccount()
+        public static TAccount SelectAccount<TAccount>() where TAccount : IAccount
         {
-            Display(Properties.Resources.SelectAccount);
-            return currentCustomer.GetAccount(ConsoleUtil.GetResponse(currentCustomer.GetAccountNames()));
+            IEnumerable<string> accNames = currentCustomer.GetAccountNames<IAccount>();
+            if (accNames.Count() == 1) return (TAccount)currentCustomer.GetAccount(accNames.First());
+            Console.WriteLine(Properties.Resources.SelectAccount);
+            return (TAccount)currentCustomer.GetAccount(ConsoleUtil.GetResponse(accNames));
         }
 
         public static void Transfer()
         {
-            
-            //Display();
+            if (currentCustomer.AccountCount() < 2)
+            {
+                Console.WriteLine(Properties.Resources.TransferRequiresTwoAccounts);
+                return;
+            }
+            // IEnumerable<string> anames = from a in accs select a.Name;
+            ITransfer from = SelectAccount<ITransfer>();
+            currentCustomer.RemoveAccount(from);
+            IAccount to = SelectAccount<IAccount>();
+            currentCustomer.AddAccount(from);
+            Console.WriteLine(Properties.Resources.TransferAmount);
+            int amt = ConsoleUtil.GetDollarAmount();
+
+            if (!(to is IDebt) && !(to is ITransfer))
+            {
+                Log.Warning("Unknown account type: " + to.GetType().ToString());
+                Console.WriteLine(Properties.Resources.IncompatibleAccount);
+                return;
+            }
+            else if (to is IDebt && ((IDebt)to).AmountOwed() < amt) {
+                if(!ConsoleUtil.GetConfirm(Properties.Resources.TransferNotMoreThanOwedConfirm))
+                {
+                    Console.WriteLine(Properties.Resources.OperationCancelled);
+                    return;
+                }
+                amt = ((IDebt)to).AmountOwed();
+            }
+
+            if (ConsoleUtil.PrintWithdrawalStatus(from.Withdraw(amt)))
+            {
+                if(to is ITransfer)
+                {
+                    ((ITransfer)to).Deposit(amt);
+                } else if(to is IDebt)
+                {
+                    ((IDebt)to).MakePayment(amt);
+                }
+                Console.WriteLine($"{amt} {Properties.Resources.WasTransferredSuccessfully}");
+                Console.WriteLine(Properties.Resources.OperationComplete);
+                return;
+            }
+
+            Console.WriteLine(Properties.Resources.TransferWithdrawalFailed);
         }
     }
 }

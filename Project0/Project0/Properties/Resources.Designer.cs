@@ -61,6 +61,15 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Here are your accounts..
+        /// </summary>
+        internal static string AccountMenu {
+            get {
+                return ResourceManager.GetString("AccountMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to @&quot;^\d{0,14}(.\d{2})?$&quot;.
         /// </summary>
         internal static string AmountRegex {
@@ -106,20 +115,11 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Please enter a password: .
         /// </summary>
-        internal static string CDMenuOptions {
+        internal static string CreatePassword {
             get {
-                return ResourceManager.GetString("CDMenuOptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string CheckingAccountMenuOptions {
-            get {
-                return ResourceManager.GetString("CheckingAccountMenuOptions", resourceCulture);
+                return ResourceManager.GetString("CreatePassword", resourceCulture);
             }
         }
         
@@ -129,6 +129,33 @@ namespace Project0.Properties {
         internal static string CreateUsername {
             get {
                 return ResourceManager.GetString("CreateUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is your only account, so closing this account will remove you from our system..
+        /// </summary>
+        internal static string DeletingFinalAccount {
+            get {
+                return ResourceManager.GetString("DeletingFinalAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter an amount in dollars:.
+        /// </summary>
+        internal static string EnterDollarAmount {
+            get {
+                return ResourceManager.GetString("EnterDollarAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter your password..
+        /// </summary>
+        internal static string EnterPassword {
+            get {
+                return ResourceManager.GetString("EnterPassword", resourceCulture);
             }
         }
         
@@ -178,29 +205,74 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to This operation cannot be completed on this account..
         /// </summary>
-        internal static string LoanMenuOptions {
+        internal static string IncompatibleAccount {
             get {
-                return ResourceManager.GetString("LoanMenuOptions", resourceCulture);
+                return ResourceManager.GetString("IncompatibleAccount", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you would like to increase the amount of your loan, please speak to a store associate..
+        ///   Looks up a localized string similar to Invalid input. Try again..
         /// </summary>
-        internal static string LoanWithdraw {
+        internal static string InvalidInputTryAgain {
             get {
-                return ResourceManager.GetString("LoanWithdraw", resourceCulture);
+                return ResourceManager.GetString("InvalidInputTryAgain", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to [view] an account, open a [new] account, [transfer] between accounts or [exit]?.
+        ///   Looks up a localized string similar to Would you like to [view] an account, open a [new] account, [transfer] between accounts, [close] all accounts or [exit]?.
         /// </summary>
         internal static string MainMenuOptions {
             get {
                 return ResourceManager.GetString("MainMenuOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation cancelled..
+        /// </summary>
+        internal static string OperationCancelled {
+            get {
+                return ResourceManager.GetString("OperationCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation complete..
+        /// </summary>
+        internal static string OperationComplete {
+            get {
+                return ResourceManager.GetString("OperationComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation failed..
+        /// </summary>
+        internal static string OperationFailed {
+            get {
+                return ResourceManager.GetString("OperationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password you entered is incorrect..
+        /// </summary>
+        internal static string PasswordIncorrect {
+            get {
+                return ResourceManager.GetString("PasswordIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must be at least {} characters long..
+        /// </summary>
+        internal static string PasswordLength {
+            get {
+                return ResourceManager.GetString("PasswordLength", resourceCulture);
             }
         }
         
@@ -210,6 +282,15 @@ namespace Project0.Properties {
         internal static string PleaseEnter {
             get {
                 return ResourceManager.GetString("PleaseEnter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press any key to continue....
+        /// </summary>
+        internal static string PressAnyKey {
+            get {
+                return ResourceManager.GetString("PressAnyKey", resourceCulture);
             }
         }
         
@@ -241,6 +322,42 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to How much would you like to transfer?.
+        /// </summary>
+        internal static string TransferAmount {
+            get {
+                return ResourceManager.GetString("TransferAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The amount transferred will not be more than the amount owed. IS that okay?.
+        /// </summary>
+        internal static string TransferNotMoreThanOwedConfirm {
+            get {
+                return ResourceManager.GetString("TransferNotMoreThanOwedConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A transfer requires two accounts..
+        /// </summary>
+        internal static string TransferRequiresTwoAccounts {
+            get {
+                return ResourceManager.GetString("TransferRequiresTwoAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Funds could not be transferred from the account provided..
+        /// </summary>
+        internal static string TransferWithdrawalFailed {
+            get {
+                return ResourceManager.GetString("TransferWithdrawalFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to That username is taken. Please enter another username..
         /// </summary>
         internal static string UsernameUnavailable {
@@ -264,6 +381,15 @@ namespace Project0.Properties {
         internal static string ValidAmount {
             get {
                 return ResourceManager.GetString("ValidAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to was transferred successfully..
+        /// </summary>
+        internal static string WasTransferredSuccessfully {
+            get {
+                return ResourceManager.GetString("WasTransferredSuccessfully", resourceCulture);
             }
         }
         
@@ -304,11 +430,38 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Funds could not be transferred from the account provided..
+        ///   Looks up a localized string similar to Immature funds cannot be withdrawn..
         /// </summary>
-        internal static string WithdrawalFailed {
+        internal static string WithdrawalImmatureFunds {
             get {
-                return ResourceManager.GetString("WithdrawalFailed", resourceCulture);
+                return ResourceManager.GetString("WithdrawalImmatureFunds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insufficient funds for requested withdrawal..
+        /// </summary>
+        internal static string WithdrawalInsufficientFunds {
+            get {
+                return ResourceManager.GetString("WithdrawalInsufficientFunds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Withdrawal succeeded. Interest will be charged on the resulting negative balance..
+        /// </summary>
+        internal static string WithdrawalSuccessBorrow {
+            get {
+                return ResourceManager.GetString("WithdrawalSuccessBorrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested funds will be deducted from account balance..
+        /// </summary>
+        internal static string WithdrawalSuccessNoBorrow {
+            get {
+                return ResourceManager.GetString("WithdrawalSuccessNoBorrow", resourceCulture);
             }
         }
     }

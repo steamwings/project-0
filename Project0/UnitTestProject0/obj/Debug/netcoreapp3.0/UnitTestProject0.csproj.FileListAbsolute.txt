@@ -102,3 +102,12 @@ C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\Project0.pdb
 C:\git\Project0\Project0\UnitTestProject0\obj\Debug\netcoreapp3.0\UnitTestProject0.csproj.CopyComplete
 C:\git\Project0\Project0\UnitTestProject0\obj\Debug\netcoreapp3.0\UnitTestProject0.dll
 C:\git\Project0\Project0\UnitTestProject0\obj\Debug\netcoreapp3.0\UnitTestProject0.pdb
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\Serilog.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\Serilog.Sinks.File.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\Serilog.Sinks.Console.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\System.Data.SqlClient.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\runtimes\win-arm64\native\sni.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\runtimes\win-x64\native\sni.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\runtimes\win-x86\native\sni.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\git\Project0\Project0\UnitTestProject0\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
