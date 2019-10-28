@@ -1,9 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Project0;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace UnitTestProject0
 {
@@ -13,8 +10,7 @@ namespace UnitTestProject0
         [TestMethod]
         public void TestFormatTransactions()
         {
-            Log.Information("Beginning TestFormatTransactions");
-            UnitTestSetup.SetupTesting();
+            UnitTesting.SetupTesting();
             //Customer c = new Customer("name", "pass");
             CheckingAccount ca = new CheckingAccount(3);
             //c.AddAccount(ca);

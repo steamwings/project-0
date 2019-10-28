@@ -124,7 +124,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You still have funds in your account. What would you like to do?.
+        ///   Looks up a localized string similar to You still have ${} in your account. What would you like to do?.
         /// </summary>
         internal static string CloseRemoveFunds {
             get {
@@ -148,6 +148,15 @@ namespace Project0.Properties {
         internal static string ConfirmCloseWithFunds {
             get {
                 return ResourceManager.GetString("ConfirmCloseWithFunds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You will need another checking account to transfer..
+        /// </summary>
+        internal static string CreateCheckingNeeded {
+            get {
+                return ResourceManager.GetString("CreateCheckingNeeded", resourceCulture);
             }
         }
         
@@ -377,7 +386,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How much would you like to transfer?.
+        ///   Looks up a localized string similar to How much would you like to transfer from {0} to {1}?.
         /// </summary>
         internal static string TransferAmount {
             get {

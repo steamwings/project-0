@@ -1,31 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Project0
 {
     public static class Extensions
     {
-        //https://github.com/markwhitaker/MonthDiff
-        public static int GetTotalMonthsFrom(this DateTime dt1, DateTime dt2)
+        /// <summary>
+        /// Extension method that answers: dt1 (this) is how many months before dt2?
+        /// </summary>
+        /// <param name="dt1"></param>
+        /// <param name="dt2"></param>
+        /// <returns>Number of months dt1 is before dt2. May be negative if dt2 &lt; dt1. </returns>
+        public static int MonthsBefore(this DateTime dt1, DateTime dt2)
         {
-            var earlyDate = (dt1 > dt2) ? dt2.Date : dt1.Date;
-            var lateDate = (dt1 > dt2) ? dt1.Date : dt2.Date;
-
-            // Start with 1 month's difference and keep incrementing
-            // until we overshoot the late date
-            int monthsDiff = 1;
-            while (earlyDate.AddMonths(monthsDiff) <= lateDate)
+            (DateTime early, DateTime late, bool dt2After) = dt2 > dt1 ? (dt1,dt2,true) : (dt2,dt1,false);
+            DateTime tmp;
+            int months = 1;
+            while ((tmp = early.AddMonths(1)) <= late)
             {
-                monthsDiff++;
+                early = tmp;
+                months++;
             }
-
-            return monthsDiff - 1;
-        }
-
-        public static int GetTotalMonthsFrom(this DateTimeOffset dt1, DateTimeOffset dt2)
-        {
-            return dt1.DateTime.GetTotalMonthsFrom(dt2.DateTime);
+            return (months-1)*(dt2After ? 1 : -1);
         }
     }
 }

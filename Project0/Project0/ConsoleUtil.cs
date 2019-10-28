@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using static Project0.ITransfer;
 
 namespace Project0
 {
@@ -13,10 +12,21 @@ namespace Project0
     /// </summary>
     public static class ConsoleUtil
     {
+        public delegate string DelReadLine();
+        public delegate ConsoleKeyInfo DelReadKey(bool hide);
+        public delegate void DelWrite(string msg);
+        public delegate void DelVoid();
+        // Basic function pointers to control input/output flow
+        public static DelVoid Clear = () => { Console.Clear(); };
+        public static DelReadLine ReadLine = () => { return Console.ReadLine(); };
+        public static DelReadKey ReadKey = hide => { return Console.ReadKey(hide); };
+        public static DelWrite WriteLine = msg => {Console.WriteLine(msg); };
+        public static DelWrite Write = msg => { Console.Write(msg); };
+        
         public static void Display(string s)
         {
-            Console.Clear();
-            Console.WriteLine(s);
+            Clear();
+            WriteLine(s);
         }
         public static void DisplayWait(string s)
         {
@@ -26,29 +36,29 @@ namespace Project0
 
         public static void GetAnyKey()
         {
-            Console.WriteLine(Properties.Resources.PressAnyKey);
+            WriteLine(Properties.Resources.PressAnyKey);
             while (!Console.KeyAvailable) ;
-            Console.ReadKey(true);
+            ReadKey(true);
         }
 
         public static decimal GetDollarAmount()
         {
             var rg = new Regex(@"^\d{0,14}(.\d\d)?$");
-            Console.Write(Properties.Resources.EnterDollarAmount + " $");
-            var resp = Console.ReadLine();
+            Write(Properties.Resources.EnterDollarAmount + " $");
+            var resp = ReadLine();
             while (!rg.IsMatch(resp))
             {
-                Console.WriteLine(Properties.Resources.ValidAmount);
-                Console.Write("$");
-                resp = Console.ReadLine();
+                WriteLine(Properties.Resources.ValidAmount);
+                Write("$");
+                resp = ReadLine();
             }
             return Decimal.Parse(resp);
         }
 
         public static void PrintOperationStatus(bool success)
         {
-            if (success) Console.WriteLine(Properties.Resources.OperationComplete);
-            else Console.WriteLine(Properties.Resources.OperationFailed);
+            if (success) WriteLine(Properties.Resources.OperationComplete);
+            else WriteLine(Properties.Resources.OperationFailed);
         }
 
         public static bool PrintTransferResult(TransferResult res)
@@ -56,16 +66,16 @@ namespace Project0
             switch (res)
             {
                 case TransferResult.SuccessBorrowing:
-                    Console.WriteLine(Properties.Resources.WithdrawalSuccessBorrow);
+                    WriteLine(Properties.Resources.WithdrawalSuccessBorrow);
                     return true;
                 case TransferResult.SuccessNoBorrow:
-                    Console.WriteLine(Properties.Resources.WithdrawalSuccessNoBorrow);
+                    WriteLine(Properties.Resources.WithdrawalSuccessNoBorrow);
                     return true;
                 case TransferResult.ImmatureFunds:
-                    Console.WriteLine(Properties.Resources.WithdrawalImmatureFunds);
+                    WriteLine(Properties.Resources.WithdrawalImmatureFunds);
                     break;
                 case TransferResult.InsufficientFunds:
-                    Console.WriteLine(Properties.Resources.WithdrawalInsufficientFunds);
+                    WriteLine(Properties.Resources.WithdrawalInsufficientFunds);
                     break;
                 default:
                     break;
@@ -85,7 +95,7 @@ namespace Project0
 
         public static bool GetConfirm(string msg)
         {
-            Console.WriteLine(msg);
+            WriteLine(msg);
             return GetConfirm();
         }
 
@@ -99,16 +109,16 @@ namespace Project0
             string s;
             do
             {
-                Console.Write(Properties.Resources.PleaseEnter);
+                Write(Properties.Resources.PleaseEnter);
                 var en = responses.GetEnumerator();
                 en.MoveNext();
-                Console.Write($"\"{en.Current}\"");
+                Write($"\"{en.Current}\"");
                 while (en.MoveNext())
                 {
-                    Console.Write($" or \"{en.Current}\"");
+                    Write($" or \"{en.Current}\"");
                 }
-                Console.WriteLine();
-                s = Console.ReadLine();
+                WriteLine("");
+                s = ReadLine();
             }
             while (!responses.Contains(s));
             return s;
@@ -119,19 +129,29 @@ namespace Project0
             StringBuilder s = new StringBuilder();
             while (true)
             {
-                var c = Console.ReadKey(true);
-                if (c.Key == ConsoleKey.Enter) break;
+                var c = ReadKey(true);
+                if (c.Key == ConsoleKey.Enter)
+                {
+                    if (s.Length < minPassLen)
+                    {
+                        s.Clear();
+                        Clear();
+                        WriteLine(Properties.Resources.PasswordLength.Replace("{}", minPassLen.ToString()));
+                        WriteLine(Properties.Resources.CreatePassword);
+                    }
+                    else break;
+                }
                 else if (c.Key == ConsoleKey.Backspace)
                 {
                     if (s.Length > 0)
                     {
-                        Console.Write("\b\x1B[1P");
+                        Write("\b\x1B[1P");
                         s.Remove(s.Length - 1, 1);
                     }
                 }
                 else
                 {
-                    Console.Write('*');
+                    Write("*");
                     s.Append(c.KeyChar);
                 }
             }
@@ -143,7 +163,7 @@ namespace Project0
             string s;
             do
             {
-                s = Console.ReadLine();
+                s = ReadLine();
             } while (string.IsNullOrEmpty(s));
             return s;
         }

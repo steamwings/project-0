@@ -30,6 +30,10 @@ namespace Project0
             .CreateLogger();
 
             Log.Information("Bank console program started.");
+
+#if DEBUG
+            ConsoleUtil.WriteLine += msg => { Log.Verbose("WriteLine:"+msg); };
+#endif
             try
             {
                 while (true) // Outermost loop
@@ -39,9 +43,9 @@ namespace Project0
                     while (true) // User logged in loop
                     {
                         bool exitLoggedIn = false;
-                        Console.Clear();
-                        Console.WriteLine(currentCustomer.DisplayAllAccounts());
-                        Console.WriteLine(Properties.Resources.MainMenuOptions);
+                        ConsoleUtil.Clear();
+                        ConsoleUtil.WriteLine(currentCustomer.DisplayAllAccounts());
+                        ConsoleUtil.WriteLine(Properties.Resources.MainMenuOptions);
                         var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "logout");
                         switch (r)
                         {
@@ -84,7 +88,7 @@ namespace Project0
         public static bool Login()
         {
             ConsoleUtil.Display("\n" + Properties.Resources.Welcome + "\n\n");
-            Console.WriteLine(Properties.Resources.ExistingAccountOrRegister);
+            ConsoleUtil.WriteLine(Properties.Resources.ExistingAccountOrRegister);
             var r = ConsoleUtil.GetResponse("login", "register");
             if (r == "login")
             {
@@ -130,8 +134,8 @@ namespace Project0
                 switch (ConsoleUtil.GetResponse(options))
                 {
                     case "transactions":
-                        //foreach (var t in acc.Transactions) Console.WriteLine(t.ToString());
-                        Console.WriteLine(Transaction.FormatTransactions(acc.Transactions));
+                        //foreach (var t in acc.Transactions) ConsoleUtil.WriteLine(t.ToString());
+                        ConsoleUtil.WriteLine(Transaction.FormatTransactions(acc.Transactions));
                         ConsoleUtil.GetAnyKey();
                         break;
                     case "payment":
@@ -176,7 +180,7 @@ namespace Project0
                 while(!c.Login(ConsoleUtil.GetPass(minPassLen)))
                 {
                     if (--tries == 0) return false;
-                    Console.WriteLine(Properties.Resources.PasswordIncorrect);
+                    ConsoleUtil.WriteLine(Properties.Resources.PasswordIncorrect);
                 }
                 currentCustomer = c;
                 return true;
@@ -246,18 +250,18 @@ namespace Project0
                     a = new BusinessAccount(nextAccountId++);
                     break;
                 case "loan":
-                    Console.WriteLine(Properties.Resources.WhatSizeLoan);
+                    ConsoleUtil.WriteLine(Properties.Resources.WhatSizeLoan);
                     a = new Loan(nextAccountId++, ConsoleUtil.GetDollarAmount());
                     break;
                 case "cd":
-                    Console.WriteLine(Properties.Resources.WhatSizeCD);
+                    ConsoleUtil.WriteLine(Properties.Resources.WhatSizeCD);
                     a = new TermDeposit(nextAccountId++, ConsoleUtil.GetDollarAmount());
                     break;
                 default:
                     Log.Error(Properties.Resources.ErrorInvalidProgramFlow);
                     throw new Exception("Bank: Invalid program flow.");
             }
-            Console.WriteLine(Properties.Resources.GiveAccountName);
+            ConsoleUtil.WriteLine(Properties.Resources.GiveAccountName);
             var name = ConsoleUtil.GetString();
             while (currentCustomer.HasAccount(name))
             {
@@ -286,21 +290,30 @@ namespace Project0
                 bool exitRemoveBalance = false;
                 while (!exitRemoveBalance)
                 {
-                    Console.WriteLine(Properties.Resources.CloseRemoveFunds);
+                    ConsoleUtil.WriteLine(Properties.Resources.CloseRemoveFunds.Replace("{}", acc.Balance.ToString()));
                     List<string> options = new List<string>();
                     if (acc is IChecking)
                         options.Add("withdraw");
                     if (acc is ITransfer)
                         options.Add("transfer");
-                    options.Add("cancel");
+                    options.Add("create checking");
+                    if (acc is ITerm)
+                        ((ITerm)acc).IsMature = true;
+                    else options.Add("cancel");
+
                     switch (ConsoleUtil.GetResponse(options))
                     {
                         case "withdraw":
                             exitRemoveBalance = ConsoleUtil.PrintTransferResult(((IChecking)acc).Withdraw(acc.Balance));
                             break;
+                        case "create checking":
+                            options.Remove("create checking");
+                            AddAccount<IChecking>();
+                            break;
                         case "transfer":
                             if (currentCustomer.AccountCount() == 1)
                             {
+                                ConsoleUtil.WriteLine(Properties.Resources.CreateCheckingNeeded);
                                 AddAccount<IChecking>();
                             }
                             exitRemoveBalance = Transfer((ITransfer)acc);
@@ -330,7 +343,7 @@ namespace Project0
             if (accNames.Count() == 1) 
                 return (TAccount)currentCustomer.GetAccount(accNames.First());
             if(!string.IsNullOrEmpty(msg)) 
-                Console.WriteLine(msg);
+                ConsoleUtil.WriteLine(msg);
             return (TAccount)currentCustomer.GetAccount(ConsoleUtil.GetResponse(accNames));
         }
 
@@ -356,7 +369,7 @@ namespace Project0
             IAccount to = SelectAccount<IAccount>(Properties.Resources.SelectAccountTransferTo);
             currentCustomer.AddAccount(from);
 
-            Console.WriteLine(Properties.Resources.TransferAmount);
+            ConsoleUtil.WriteLine(Properties.Resources.TransferAmount.Replace("{0}",from.Name).Replace("{1}",to.Name));
             decimal amt = ConsoleUtil.GetDollarAmount();
 
             if (!(to is IDebt) && !(to is IChecking))
@@ -382,8 +395,8 @@ namespace Project0
                 {
                     ((IDebt)to).MakePayment(amt);
                 }
-                Console.WriteLine($"{amt} {Properties.Resources.WasTransferredSuccessfully}");
-                Console.WriteLine(Properties.Resources.OperationComplete);
+                ConsoleUtil.WriteLine($"{amt} {Properties.Resources.WasTransferredSuccessfully}");
+                ConsoleUtil.WriteLine(Properties.Resources.OperationComplete);
                 return true;
             }
             ConsoleUtil.DisplayWait(Properties.Resources.TransferWithdrawalFailed);

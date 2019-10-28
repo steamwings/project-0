@@ -14,8 +14,8 @@ namespace Project0
         
         public bool CompoundInterest(decimal rate)
         {
-            int months = DateTime.Now.GetTotalMonthsFrom(Updated);
-            if (months == 0) return false;
+            int months = DateTime.Now.MonthsBefore(Updated);
+            if (months < 1) return false;
 
             return true;
         }
@@ -119,7 +119,7 @@ namespace Project0
 
     public class TermDeposit : Account, ITerm
     {
-        public bool IsMature { get; } = false;
+        public bool IsMature { get; set; } = false;
         public TermDeposit(int id, decimal amount) : base(id)
         {
             Balance += amount;

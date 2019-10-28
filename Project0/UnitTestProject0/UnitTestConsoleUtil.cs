@@ -1,46 +1,59 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Project0;
 using Serilog;
-using System;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace UnitTestProject0
 {
-    class HelperMethods
+ 
+    [TestClass]
+    public class UnitTestConsoleUtil
     {
         public static bool TestGetDollarAmount(string input, decimal exp)
         {
             Log.Information($"TestGetDollarAmount\ninput:{input}|exp:{exp}");
-            Console.SetOut(new StringWriter());
-            Console.SetIn(new StringReader(input));
+            UnitTesting.AddInput(input);
             return exp == ConsoleUtil.GetDollarAmount();
         }
-    }
 
-    [TestClass]
-    public class UnitTestConsoleUtil
-    {
         [TestMethod]
         public void TestGetDollarAmountBasic()
         {
-            UnitTestSetup.SetupTesting();
-            Assert.IsTrue(HelperMethods.TestGetDollarAmount("45", 45));
+            UnitTesting.SetupTesting();
+            Assert.IsTrue(TestGetDollarAmount("45", 45));
         }
 
         [TestMethod]
         public void TestGetDollarAmountFraction()
         {
-            UnitTestSetup.SetupTesting();
-            Assert.IsTrue(HelperMethods.TestGetDollarAmount("45.55", 45.55M));
+            UnitTesting.SetupTesting();
+            Assert.IsTrue(TestGetDollarAmount("45.55", 45.55M));
         }
+
+        [TestMethod]
+        public void TestNegativeGetDollarAmountFraction()
+        {
+            UnitTesting.SetupTesting();
+            Task<decimal> getAmt = Task.Run(() => ConsoleUtil.GetDollarAmount());
+            UnitTesting.AddInput("45.555");
+            UnitTesting.AddInput("45.67");
+            decimal res = getAmt.GetAwaiter().GetResult();
+            Assert.AreEqual(45.67M, res);
+        }
+
         [TestMethod]
         public void TestGetPass()
         {
-            UnitTestSetup.SetupTesting();
-            Log.Information($"TestGetPass\n");
-            Console.SetOut(new StringWriter());
-            Console.SetIn(new StringReader("pass"));
-            Assert.IsTrue("pass" == ConsoleUtil.GetPass(4));
+            UnitTesting.SetupTesting();
+            int minPassLen = 5;
+            string password = "password";
+            Task<string> getPass = Task.Run(() => ConsoleUtil.GetPass(minPassLen));
+            UnitTesting.AddInput("p\n");
+            UnitTesting.AddInput(password + "\n");
+            string res = getPass.GetAwaiter().GetResult();
+            Assert.IsTrue(password == res);
+            UnitTesting.TestRunning = false;
+            Log.Information($"Done TestGetPass\n");
         }
 
     }

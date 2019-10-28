@@ -8,10 +8,10 @@ namespace UnitTestProject0
     [TestClass]
     public class UnitTestDatabase
     {
-        [TestMethod]
+        //[TestMethod]
         public void TestCreateCustomer()
         {
-            UnitTestSetup.SetupTesting();
+            UnitTesting.SetupTesting();
             Assert.IsTrue(true);
         }
 

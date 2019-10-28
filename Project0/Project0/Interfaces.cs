@@ -42,6 +42,6 @@ namespace Project0
 
     public interface ITerm :  ITransfer
     {
-        bool IsMature { get; }
+        bool IsMature { get; set; }
     }
 }

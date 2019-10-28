@@ -139,7 +139,7 @@
     <value>You cannot close all your accounts because funds are owed.</value>
   </data>
   <data name="CloseRemoveFunds" xml:space="preserve">
-    <value>You still have funds in your account. What would you like to do?</value>
+    <value>You still have ${} in your account. What would you like to do?</value>
   </data>
   <data name="ConfirmClosePremature" xml:space="preserve">
     <value>Are you sure you want to close this account prematurely? Funds can be transferred out after closing.</value>
@@ -147,6 +147,9 @@
   <data name="ConfirmCloseWithFunds" xml:space="preserve">
     <value>WARNING: You will lose access to funds!
 Are you sure you want to delete your account?</value>
+  </data>
+  <data name="CreateCheckingNeeded" xml:space="preserve">
+    <value>You will need another checking account to transfer.</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Please enter a password: </value>
@@ -224,7 +227,7 @@ Are you sure you want to delete your account?</value>
     <value>Funds in a term deposit account cannot be withdrawn before maturity except under specific conditions specified in your account agreement. Please speak to a store associate for details.</value>
   </data>
   <data name="TransferAmount" xml:space="preserve">
-    <value>How much would you like to transfer?</value>
+    <value>How much would you like to transfer from {0} to {1}?</value>
   </data>
   <data name="TransferNotMoreThanOwedConfirm" xml:space="preserve">
     <value>The amount transferred will not be more than the amount owed. IS that okay?</value>
