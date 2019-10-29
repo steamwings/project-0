@@ -12,10 +12,22 @@ namespace Project0
         private static int nextAccountId = 1;
         private static Customer currentCustomer;
         //P1TODO Use repository pattern with DB
-        private static List<Customer> customers = new List<Customer>();
+        private static readonly List<Customer> customers = new List<Customer>();
 
         public static decimal InterestRate { get; private set; }
+#if DEBUG
+        public static int CustomerCount()
+        {
+            return customers.Count();
+        }
 
+        public static void Reset()
+        {
+            nextAccountId = 1;
+            currentCustomer = null;
+            customers.Clear();
+        }
+#endif
         public static void Main()
         {
             Log.Logger = new LoggerConfiguration() // Initialize Serilog
@@ -39,38 +51,7 @@ namespace Project0
                 while (true) // Outermost loop
                 {
                     while (!Login()) ;
-
-                    while (true) // User logged in loop
-                    {
-                        bool exitLoggedIn = false;
-                        ConsoleUtil.Clear();
-                        ConsoleUtil.WriteLine(currentCustomer.DisplayAllAccounts());
-                        ConsoleUtil.WriteLine(Properties.Resources.MainMenuOptions);
-                        var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "logout");
-                        switch (r)
-                        {
-                            case "view":
-                                View();
-                                break;
-                            case "new":
-                                AddAccount<IAccount>();
-                                break;
-                            case "transfer":
-                                Transfer();
-                                break;
-                            case "close":
-                                if (RemoveCustomer()) exitLoggedIn = true;
-                                break;
-                            case "logout":
-                                exitLoggedIn = true;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (exitLoggedIn) break;
-                    }
-                    currentCustomer = null;
-                    ConsoleUtil.DisplayWait(Properties.Resources.Goodbye);
+                    MainMenu();
                 }
                 
             }
@@ -83,6 +64,42 @@ namespace Project0
             {
                 Log.CloseAndFlush();
             }
+        }
+
+        public static void MainMenu()
+        {
+            if (currentCustomer is null) Log.Warning("Main menu: No current customer.");
+            while (true) // User logged in loop
+            {
+                bool exitLoggedIn = false;
+                ConsoleUtil.Clear();
+                ConsoleUtil.WriteLine(currentCustomer.DisplayAllAccounts());
+                ConsoleUtil.WriteLine(Properties.Resources.MainMenuOptions);
+                var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "logout");
+                switch (r)
+                {
+                    case "view":
+                        View();
+                        break;
+                    case "new":
+                        AddAccount<IAccount>();
+                        break;
+                    case "transfer":
+                        Transfer();
+                        break;
+                    case "close":
+                        if (RemoveCustomer()) exitLoggedIn = true;
+                        break;
+                    case "logout":
+                        exitLoggedIn = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (exitLoggedIn) break;
+            }
+            currentCustomer = null;
+            ConsoleUtil.DisplayWait(Properties.Resources.Goodbye);
         }
 
         public static bool Login()
@@ -229,19 +246,24 @@ namespace Project0
             else return false;
         }
 
+        public static List<string> ListAccountTypes<TAccount>() where TAccount : IAccount
+        {
+            List<string> l = new List<string>();
+            foreach (var t in typeof(TAccount).Assembly.GetTypes().Where(type => typeof(TAccount).IsAssignableFrom(type)))
+            {
+                if (t.Name == "CheckingAccount") l.Add("checking");
+                else if (t.Name == "BusinessAccount") l.Add("business");
+                else if (t.Name == "Loan") l.Add("loan");
+                else if (t.Name == "TermDeposit") l.Add("cd");
+            }
+            return l;
+        }
+
         public static IAccount AddAccount<TAccount>() where TAccount : IAccount
         {
             ConsoleUtil.Display(Properties.Resources.WhatAccountType);
-            List<string> options = new List<string>();
-            foreach(var t in typeof(TAccount).Assembly.GetTypes().Where(type => type.IsAssignableFrom(typeof(TAccount))))
-            {
-                if (t.Name == "CheckingAccount") options.Add("checking");
-                else if (t.Name == "BusinessAccount") options.Add("business");
-                else if (t.Name == "Loan") options.Add("loan");
-                else if (t.Name == "TermDeposit") options.Add("cd");
-            }
             IAccount a;
-            switch (ConsoleUtil.GetResponse("checking", "business", "loan", "cd"))
+            switch (ConsoleUtil.GetResponse(ListAccountTypes<TAccount>()))
             {
                 case "checking":
                     a = new CheckingAccount(nextAccountId++);

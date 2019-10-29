@@ -16,12 +16,14 @@ namespace Project0
         public delegate ConsoleKeyInfo DelReadKey(bool hide);
         public delegate void DelWrite(string msg);
         public delegate void DelVoid();
+        public delegate bool DelBool();
         // Basic function pointers to control input/output flow
         public static DelVoid Clear = () => { Console.Clear(); };
         public static DelReadLine ReadLine = () => { return Console.ReadLine(); };
         public static DelReadKey ReadKey = hide => { return Console.ReadKey(hide); };
         public static DelWrite WriteLine = msg => {Console.WriteLine(msg); };
         public static DelWrite Write = msg => { Console.Write(msg); };
+        public static DelBool KeyAvailable = () => { return Console.KeyAvailable; };
         
         public static void Display(string s)
         {
@@ -37,7 +39,7 @@ namespace Project0
         public static void GetAnyKey()
         {
             WriteLine(Properties.Resources.PressAnyKey);
-            while (!Console.KeyAvailable) ;
+            while (!KeyAvailable()) ;
             ReadKey(true);
         }
 

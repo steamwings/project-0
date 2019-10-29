@@ -28,7 +28,7 @@ namespace Project0
 
         public virtual string Info()
         {
-            return $"Account Name:{Name}\nBalance: {Balance}\n";
+            return $"Account Name: {Name}\nBalance: ${Balance}\n";
         }
     }
 
