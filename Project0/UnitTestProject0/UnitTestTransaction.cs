@@ -20,6 +20,7 @@ namespace UnitTestProject0
             ca.Deposit(4.50M);
             Log.Information("Format transactions test:\n" +Transaction.FormatTransactions(ca.Transactions));
             Assert.IsTrue(true);
+            UnitTesting.EndTest();
         }
     }
 }

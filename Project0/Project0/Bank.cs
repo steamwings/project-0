@@ -338,11 +338,12 @@ namespace Project0
                                 ConsoleUtil.WriteLine(Properties.Resources.CreateCheckingNeeded);
                                 AddAccount<IChecking>();
                             }
-                            exitRemoveBalance = Transfer((ITransfer)acc);
+                            Transfer((ITransfer)acc);
                             break;
                         case "cancel":
                             return false;
                     }
+                    if (acc.Balance == 0) exitRemoveBalance = true;
                 }
             }
             if (currentCustomer.AccountCount() == 1)

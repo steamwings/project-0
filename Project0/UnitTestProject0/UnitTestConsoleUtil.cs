@@ -21,6 +21,7 @@ namespace UnitTestProject0
         {
             UnitTesting.SetupTesting();
             Assert.IsTrue(TestGetDollarAmount("45", 45));
+            UnitTesting.EndTest();
         }
 
         [TestMethod]
@@ -28,6 +29,7 @@ namespace UnitTestProject0
         {
             UnitTesting.SetupTesting();
             Assert.IsTrue(TestGetDollarAmount("45.55", 45.55M));
+            UnitTesting.EndTest();
         }
 
         [TestMethod]
@@ -39,6 +41,7 @@ namespace UnitTestProject0
             UnitTesting.AddInput("45.67");
             decimal res = getAmt.GetAwaiter().GetResult();
             Assert.AreEqual(45.67M, res);
+            UnitTesting.EndTest();
         }
 
         [TestMethod]
@@ -52,8 +55,7 @@ namespace UnitTestProject0
             UnitTesting.AddInput(password + "\n");
             string res = getPass.GetAwaiter().GetResult();
             Assert.IsTrue(password == res);
-            UnitTesting.TestRunning = false;
-            Log.Information($"Done TestGetPass\n");
+            UnitTesting.EndTest();
         }
 
     }

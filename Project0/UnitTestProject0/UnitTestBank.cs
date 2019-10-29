@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Project0;
 using Serilog;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace UnitTestProject0
 {
@@ -29,6 +30,7 @@ namespace UnitTestProject0
             Log.Debug("Part 1 complete");
             l = Bank.ListAccountTypes<IChecking>();
             Assert.IsTrue(l.Contains("checking") && l.Contains("business") && l.Count == 2);
+            UnitTesting.EndTest();
         }
 
         [TestMethod]
@@ -39,6 +41,7 @@ namespace UnitTestProject0
             Task<bool> removeCustomer = Task.Run(() => Bank.RemoveCustomer());
             UnitTesting.AddInput("yes");
             Assert.IsTrue(removeCustomer.GetAwaiter().GetResult());
+            UnitTesting.EndTest();
         }
 
         public void TestLogin()
@@ -53,30 +56,30 @@ namespace UnitTestProject0
             UnitTesting.AddInput("user");
             UnitTesting.AddInput("password");
             Assert.IsTrue(loginCustomer.GetAwaiter().GetResult());
+            UnitTesting.EndTest();
         }
 
-       // [TestMethod]
+        [TestMethod]
         public void TestAddDepositDelete()
         {
             UnitTesting.SetupTesting();
+            Regex re = new Regex(@"\$45\.55");
+            UnitTesting.AddWatch(re);
             CreateCustomer();
             Task deposit = Task.Run(() => Bank.MainMenu());
             UnitTesting.AddInput("view");
             UnitTesting.AddInput("deposit");
-            string info = UnitTesting.GetOutputForInput("45.55");
-            Log.Debug($"info:{info}");
-            UnitTesting.AutoConsumeOutput = true;
+            UnitTesting.AddInput("45.55");
             UnitTesting.AddInput("return");
             UnitTesting.AddInput("close");
             UnitTesting.AddInput("yes");
             UnitTesting.AddInput("yes");
-            Assert.IsTrue(info.Contains("45.55"));
-        }
-
-        public void TestTransfer()
-        {
-            UnitTesting.SetupTesting();
-
+            UnitTesting.AddInput("\n");
+            deposit.GetAwaiter().GetResult();
+            int res = UnitTesting.WatchCount(re);
+            UnitTesting.EndTest();
+            Log.Information($"Recorded {res} occurrences.");
+            Assert.IsTrue(res > 0);
         }
 
     }

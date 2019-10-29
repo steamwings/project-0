@@ -13,6 +13,7 @@ namespace UnitTestProject0
             var pass = "password";
             Customer c = new Customer("user", pass);
             Assert.IsTrue(c.Login(pass));
+            UnitTesting.EndTest();
         }
     }
 }

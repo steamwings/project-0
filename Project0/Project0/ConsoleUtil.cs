@@ -10,7 +10,7 @@ namespace Project0
     /// <summary>
     /// Static utility functions to help with output and user input.
     /// </summary>
-    public static class ConsoleUtil
+    public sealed class ConsoleUtil
     {
         public delegate string DelReadLine();
         public delegate ConsoleKeyInfo DelReadKey(bool hide);
