@@ -41,7 +41,7 @@ namespace Project0
 
         public (string time, string transaction, string amt, string transfer) Values()
         {
-            return (Time.ToString(), Enum.GetName(typeof(TransactionType), Type), Amount.HasValue ? $"${Amount}" : "",
+            return (Time.ToString(), Enum.GetName(typeof(TransactionType), Type), Amount.HasValue ? ((decimal)Amount).ToString("0.00") : "",
                 TransferResult.HasValue ? $"{Enum.GetName(typeof(TransferResult), TransferResult.Value)}" : "");
         }
 

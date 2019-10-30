@@ -1,0 +1,3 @@
+C:\git\Project0\Project0\UnitTestProject0\obj\Release\netcoreapp3.0\UnitTestProject0.csprojAssemblyReference.cache
+C:\git\Project0\Project0\UnitTestProject0\obj\Release\netcoreapp3.0\UnitTestProject0.AssemblyInfoInputs.cache
+C:\git\Project0\Project0\UnitTestProject0\obj\Release\netcoreapp3.0\UnitTestProject0.AssemblyInfo.cs

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#if DEBUG
+using Microsoft.EntityFrameworkCore;
 
 namespace Project0
 {
@@ -16,3 +17,4 @@ namespace Project0
 //        public DbSet<Transaction> Transaction { get; set; }
     }
 }
+#endif

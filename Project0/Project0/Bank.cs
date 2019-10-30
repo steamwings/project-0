@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Project0
 {
-    public sealed class Bank
+    public static class Bank
     {
         private static readonly int minPassLen = 5;
         private static int nextAccountId = 1;
