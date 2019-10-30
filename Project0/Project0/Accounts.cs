@@ -7,28 +7,45 @@ namespace Project0
     {
         public int ID { get; }
         public string Name { get; set; }
-        //protected DollarAmount Balance { get; protected set; } = new DollarAmount();
         public decimal Balance { get; set; }
-        public DateTime Updated { get; set; }
+        public DateTime LastUpdated { get; set; }
         public List<Transaction> Transactions { get; } = new List<Transaction>();
         
-        public bool CompoundInterest(decimal rate)
+        public bool CompoundInterest(decimal rate, bool daily = false)
         {
-            int months = DateTime.Now.MonthsBefore(Updated);
-            if (months < 1) return false;
-
+            int timesToCompound; decimal divideBy = daily ? 356 : 12;
+            if (daily)
+            {
+                double days = (DateTime.Now - LastUpdated).TotalDays;
+                if (days < 1) return false;
+                timesToCompound = (int) days;
+            }
+            else // Monthly
+            {
+                int months = LastUpdated.MonthsBefore(DateTime.Now);
+                if (months < 1) return false;
+                timesToCompound = months;
+            }
+            while(timesToCompound-- > 0)
+            {
+                decimal add = (Balance * rate) / divideBy;
+                Balance += add;
+                Transactions.Add(new Transaction(TransactionType.InterestCompounded, add));
+            }
+            LastUpdated = DateTime.Now;
             return true;
         }
 
         protected Account(int id)
         {
             ID = id;
+            LastUpdated = DateTime.Now;
             Transactions.Add(new Transaction(TransactionType.OpenAccount));
         }
 
         public virtual string Info()
         {
-            return $"Account Name: {Name}\nBalance: ${Balance}\n";
+            return $"Account Name: {Name}\nBalance: ${Balance.ToString("0.00")}\n";
         }
     }
 
@@ -126,7 +143,7 @@ namespace Project0
         }
         public override string Info()
         {
-            return base.Info() + (IsMature ? "(Maturation reached.)" : "(Maturation date has not been reached.)");
+            return base.Info() + (IsMature ? "(Maturation reached.)" : "(Maturation date has not been reached.)") + "\n";
         }
 
         public virtual TransferResult TransferOut(decimal amt)

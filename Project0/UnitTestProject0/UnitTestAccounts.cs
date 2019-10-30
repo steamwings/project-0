@@ -53,5 +53,18 @@ namespace UnitTestProject0
             Assert.AreEqual(-6, new DateTime(2012, 1, 1).MonthsBefore(new DateTime(2011, 6, 10)));
 
         }
+        [TestMethod]
+        public void TestCompoundInterest()
+        {
+            UnitTesting.SetupTesting();
+            IAccount a = new CheckingAccount(3);
+            a.Balance = 5000;
+            a.LastUpdated = a.LastUpdated.AddMonths(-1);
+            a.CompoundInterest(.01M);
+            Log.Debug("a.Balance:" + a.Balance);
+            Assert.AreEqual(5000 + (5000M * .01M) / 12M, a.Balance);
+            UnitTesting.EndTest();
+        }
+
     }
 }

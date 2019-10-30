@@ -139,7 +139,7 @@
     <value>You cannot close all your accounts because funds are owed.</value>
   </data>
   <data name="CloseRemoveFunds" xml:space="preserve">
-    <value>You still have ${} in your account. What would you like to do?</value>
+    <value>You still have ${0} in your account. What would you like to do?</value>
   </data>
   <data name="ConfirmClosePremature" xml:space="preserve">
     <value>Are you sure you want to close this account prematurely? Funds can be transferred out after closing.</value>
@@ -190,6 +190,9 @@ Are you sure you want to delete your account?</value>
   <data name="MainMenuOptions" xml:space="preserve">
     <value>You can [view] an account, open a [new] account, [transfer] between accounts, [close] all accounts or [logout].</value>
   </data>
+  <data name="no" xml:space="preserve">
+    <value>no</value>
+  </data>
   <data name="OperationCancelled" xml:space="preserve">
     <value>Operation cancelled.</value>
   </data>
@@ -203,10 +206,10 @@ Are you sure you want to delete your account?</value>
     <value>The password you entered is incorrect.</value>
   </data>
   <data name="PasswordLength" xml:space="preserve">
-    <value>A password must be at least {} characters long.</value>
+    <value>A password must be at least {0} characters long.</value>
   </data>
   <data name="PleaseEnter" xml:space="preserve">
-    <value>Please enter: </value>
+    <value>Please enter the number corresponding to your selection: </value>
   </data>
   <data name="PressAnyKey" xml:space="preserve">
     <value>Press any key to continue...</value>
@@ -235,6 +238,9 @@ Are you sure you want to delete your account?</value>
   <data name="TransferRequiresTwoAccounts" xml:space="preserve">
     <value>A transfer requires two accounts.</value>
   </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>{0} was transferred successfully from {1} to {2}.</value>
+  </data>
   <data name="TransferWithdrawalFailed" xml:space="preserve">
     <value>Funds could not be transferred from the account provided.</value>
   </data>
@@ -246,9 +252,6 @@ Are you sure you want to delete your account?</value>
   </data>
   <data name="ValidAmount" xml:space="preserve">
     <value>Please enter valid dollar amount.</value>
-  </data>
-  <data name="WasTransferredSuccessfully" xml:space="preserve">
-    <value>was transferred successfully.</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Welcome to Console First Bank - banking the way it used to be.</value>
@@ -273,5 +276,8 @@ Are you sure you want to delete your account?</value>
   </data>
   <data name="WithdrawalSuccessNoBorrow" xml:space="preserve">
     <value>Requested funds will be deducted from account balance.</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>yes</value>
   </data>
 </root>

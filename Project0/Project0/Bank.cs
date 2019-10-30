@@ -14,7 +14,7 @@ namespace Project0
         //P1TODO Use repository pattern with DB
         private static readonly List<Customer> customers = new List<Customer>();
 
-        public static decimal InterestRate { get; private set; }
+        public static decimal InterestRate { get; private set; } = .01M;
 #if DEBUG
         public static int CustomerCount()
         {
@@ -46,6 +46,8 @@ namespace Project0
 #if DEBUG
             ConsoleUtil.WriteLine += msg => { Log.Verbose("WriteLine:"+msg); };
 #endif
+            customers.Add(new Customer("admin", "admin")); //P1TODO Remove
+
             try
             {
                 while (true) // Outermost loop
@@ -75,7 +77,13 @@ namespace Project0
                 ConsoleUtil.Clear();
                 ConsoleUtil.WriteLine(currentCustomer.DisplayAllAccounts());
                 ConsoleUtil.WriteLine(Properties.Resources.MainMenuOptions);
-                var r = ConsoleUtil.GetResponse("view", "new", "transfer", "close", "logout");
+                List<string> mainMenu = new List<string>() { "view", "new", "transfer", "close", "logout" };
+                if (currentCustomer.Username == "admin")
+                {
+                    mainMenu.Add("age accounts");
+                    mainMenu.Add("compound");
+                }
+                var r = ConsoleUtil.GetResponse(mainMenu);
                 switch (r)
                 {
                     case "view":
@@ -92,6 +100,13 @@ namespace Project0
                         break;
                     case "logout":
                         exitLoggedIn = true;
+                        break;
+                    case "compound":
+                        CompoundInterest();
+                        break;
+                    case "age accounts":
+                        ConsoleUtil.WriteLine("How many months?");
+                        AgeAccounts(int.Parse(ConsoleUtil.ReadLine()));
                         break;
                     default:
                         break;
@@ -297,6 +312,7 @@ namespace Project0
 
         public static bool CloseAccount(IAccount acc)
         {
+            bool cannotCancel = false;
             if (acc is ITerm && !((ITerm)acc).IsMature)
             {
                 if (!ConsoleUtil.GetConfirm(Properties.Resources.ConfirmClosePremature))
@@ -312,7 +328,7 @@ namespace Project0
                 bool exitRemoveBalance = false;
                 while (!exitRemoveBalance)
                 {
-                    ConsoleUtil.WriteLine(Properties.Resources.CloseRemoveFunds.Replace("{}", acc.Balance.ToString()));
+                    ConsoleUtil.WriteLine(string.Format(Properties.Resources.CloseRemoveFunds,acc.Balance.ToString()));
                     List<string> options = new List<string>();
                     if (acc is IChecking)
                         options.Add("withdraw");
@@ -320,7 +336,10 @@ namespace Project0
                         options.Add("transfer");
                     options.Add("create checking");
                     if (acc is ITerm)
+                    {
                         ((ITerm)acc).IsMature = true;
+                        cannotCancel = true;
+                    }
                     else options.Add("cancel");
 
                     switch (ConsoleUtil.GetResponse(options))
@@ -352,12 +371,12 @@ namespace Project0
                 return RemoveCustomer();
             }
             ConsoleUtil.Display(Properties.Resources.AreYouSureDeleteAccount);
-            if (ConsoleUtil.GetConfirm())
+            if (cannotCancel || ConsoleUtil.GetConfirm())
             {
                 currentCustomer.RemoveAccount(acc);
+                return true;
             }
             else return false;
-            return true;
         }
 
         public static TAccount SelectAccount<TAccount>(string msg) where TAccount : IAccount
@@ -392,7 +411,7 @@ namespace Project0
             IAccount to = SelectAccount<IAccount>(Properties.Resources.SelectAccountTransferTo);
             currentCustomer.AddAccount(from);
 
-            ConsoleUtil.WriteLine(Properties.Resources.TransferAmount.Replace("{0}",from.Name).Replace("{1}",to.Name));
+            ConsoleUtil.WriteLine(string.Format(Properties.Resources.TransferAmount,from.Name,to.Name));
             decimal amt = ConsoleUtil.GetDollarAmount();
 
             if (!(to is IDebt) && !(to is IChecking))
@@ -418,12 +437,30 @@ namespace Project0
                 {
                     ((IDebt)to).MakePayment(amt);
                 }
-                ConsoleUtil.WriteLine($"{amt} {Properties.Resources.WasTransferredSuccessfully}");
-                ConsoleUtil.WriteLine(Properties.Resources.OperationComplete);
+                ConsoleUtil.WriteLine(string.Format(Properties.Resources.TransferSuccessful, amt, from.Name, to.Name));
+                ConsoleUtil.DisplayWait(Properties.Resources.OperationComplete);
                 return true;
             }
             ConsoleUtil.DisplayWait(Properties.Resources.TransferWithdrawalFailed);
             return false;
+        }
+        public static void CompoundInterest()
+        {
+            foreach (var customer in customers)
+            {
+                customer.GetAccounts<IAccount>().Where(a => a.Balance < 0).ToList().ForEach(a => a.CompoundInterest(InterestRate));
+                customer.GetAccounts<ITerm>().ForEach(a => a.CompoundInterest(InterestRate));
+                customer.GetAccounts<CheckingAccount>().ForEach(a => a.CompoundInterest(InterestRate));
+                customer.GetAccounts<BusinessAccount>().ForEach(a => { if (a.Balance > 0) { a.CompoundInterest(InterestRate); } });
+            }
+        }
+
+        public static void AgeAccounts(int months)
+        {
+            foreach (var customer in customers)
+            {
+                customer.GetAccounts<IAccount>().ForEach(a => a.LastUpdated = a.LastUpdated.AddMonths(-months));
+            }
         }
     }
 }

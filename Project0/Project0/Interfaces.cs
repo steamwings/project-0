@@ -8,9 +8,10 @@ namespace Project0
         int ID { get; }
         string Name { get; set; }
         decimal Balance { get; set; }
-        DateTime Updated { get; set; }
+        DateTime LastUpdated { get; set; }
         List<Transaction> Transactions { get; }
         string Info();
+        public bool CompoundInterest(decimal rate, bool daily = false);
     }
 
     public enum TransferResult

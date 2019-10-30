@@ -13,7 +13,8 @@ namespace Project0
         TransferInto,
         Payment,
         OpenAccount,
-        CloseAccount
+        CloseAccount,
+        InterestCompounded
     }
     public class Transaction
     {
@@ -37,7 +38,6 @@ namespace Project0
             TransferResult = tr;
             Amount = amt;
         }
-
 
         public (string time, string transaction, string amt, string transfer) Values()
         {

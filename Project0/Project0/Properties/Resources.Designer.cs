@@ -124,7 +124,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You still have ${} in your account. What would you like to do?.
+        ///   Looks up a localized string similar to You still have ${0} in your account. What would you like to do?.
         /// </summary>
         internal static string CloseRemoveFunds {
             get {
@@ -278,6 +278,15 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to no.
+        /// </summary>
+        internal static string no {
+            get {
+                return ResourceManager.GetString("no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation cancelled..
         /// </summary>
         internal static string OperationCancelled {
@@ -314,7 +323,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must be at least {} characters long..
+        ///   Looks up a localized string similar to A password must be at least {0} characters long..
         /// </summary>
         internal static string PasswordLength {
             get {
@@ -323,7 +332,7 @@ namespace Project0.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter: .
+        ///   Looks up a localized string similar to Please enter the number corresponding to your selection: .
         /// </summary>
         internal static string PleaseEnter {
             get {
@@ -413,6 +422,15 @@ namespace Project0.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} was transferred successfully from {1} to {2}..
+        /// </summary>
+        internal static string TransferSuccessful {
+            get {
+                return ResourceManager.GetString("TransferSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Funds could not be transferred from the account provided..
         /// </summary>
         internal static string TransferWithdrawalFailed {
@@ -445,15 +463,6 @@ namespace Project0.Properties {
         internal static string ValidAmount {
             get {
                 return ResourceManager.GetString("ValidAmount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to was transferred successfully..
-        /// </summary>
-        internal static string WasTransferredSuccessfully {
-            get {
-                return ResourceManager.GetString("WasTransferredSuccessfully", resourceCulture);
             }
         }
         
@@ -526,6 +535,15 @@ namespace Project0.Properties {
         internal static string WithdrawalSuccessNoBorrow {
             get {
                 return ResourceManager.GetString("WithdrawalSuccessNoBorrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to yes.
+        /// </summary>
+        internal static string yes {
+            get {
+                return ResourceManager.GetString("yes", resourceCulture);
             }
         }
     }

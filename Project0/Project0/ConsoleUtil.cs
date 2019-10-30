@@ -17,7 +17,7 @@ namespace Project0
         public delegate void DelWrite(string msg);
         public delegate void DelVoid();
         public delegate bool DelBool();
-        // Basic function pointers to control input/output flow
+        // Function pointers direct input/output flow
         public static DelVoid Clear = () => { Console.Clear(); };
         public static DelReadLine ReadLine = () => { return Console.ReadLine(); };
         public static DelReadKey ReadKey = hide => { return Console.ReadKey(hide); };
@@ -92,7 +92,7 @@ namespace Project0
 
         public static bool GetConfirm()
         {
-            return GetResponse("yes", "no") == "yes";
+            return GetResponse(Properties.Resources.yes, Properties.Resources.no) == Properties.Resources.yes;
         }
 
         public static bool GetConfirm(string msg)
@@ -108,22 +108,24 @@ namespace Project0
         public static string GetResponse(List<string> responses)
         {
             if(responses.Count() == 0) Log.Warning("No user options in GetResponse!");
-            string s;
+            int index = 1; string s = null; bool contains = false;
             do
             {
-                Write(Properties.Resources.PleaseEnter);
+                if(s != null) WriteLine(Properties.Resources.PleaseEnter);
+                int i = 1;
                 var en = responses.GetEnumerator();
                 en.MoveNext();
-                Write($"\"{en.Current}\"");
+                Write($"({i++}) {en.Current}");
                 while (en.MoveNext())
                 {
-                    Write($" or \"{en.Current}\"");
+                    Write($"  ({i++}) {en.Current}");
                 }
                 WriteLine("");
                 s = ReadLine();
+                contains = responses.Contains(s);
             }
-            while (!responses.Contains(s));
-            return s;
+            while (!contains && (!int.TryParse(s, out index) || index < 1 || index > responses.Count));
+            return contains ? s : responses[index-1];
         }
 
         public static string GetPass(int minPassLen)
@@ -138,7 +140,7 @@ namespace Project0
                     {
                         s.Clear();
                         Clear();
-                        WriteLine(Properties.Resources.PasswordLength.Replace("{}", minPassLen.ToString()));
+                        WriteLine(string.Format(Properties.Resources.PasswordLength, minPassLen.ToString()));
                         WriteLine(Properties.Resources.CreatePassword);
                     }
                     else break;
@@ -157,6 +159,7 @@ namespace Project0
                     s.Append(c.KeyChar);
                 }
             }
+            WriteLine("");
             return s.ToString() ;
         }
 

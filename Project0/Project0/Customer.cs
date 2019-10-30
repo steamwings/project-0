@@ -84,7 +84,12 @@ namespace Project0
 
         public List<TAccount> GetAccounts<TAccount>() where TAccount : IAccount
         {
-            return ((IEnumerable<TAccount>) accounts.Where(a => a is TAccount)).ToList();
+            List<TAccount> list = new List<TAccount>();
+            foreach(var account in accounts)
+            {
+                if (account is TAccount) list.Add((TAccount)account);
+            }
+            return list;
         }
 
         public List<string> GetAccountNames<TAccount>()
