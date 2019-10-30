@@ -448,10 +448,14 @@ namespace Project0
         {
             foreach (var customer in customers)
             {
-                customer.GetAccounts<IAccount>().Where(a => a.Balance < 0).ToList().ForEach(a => a.CompoundInterest(InterestRate));
-                customer.GetAccounts<ITerm>().ForEach(a => a.CompoundInterest(InterestRate));
-                customer.GetAccounts<CheckingAccount>().ForEach(a => a.CompoundInterest(InterestRate));
-                customer.GetAccounts<BusinessAccount>().ForEach(a => { if (a.Balance > 0) { a.CompoundInterest(InterestRate); } });
+                customer.GetAccounts<IAccount>().Where(a => a.Balance < 0).ToList()
+                    .ForEach(a => a.CompoundInterest(InterestRate));
+                customer.GetAccounts<ITerm>()
+                    .ForEach(a => a.CompoundInterest(InterestRate));
+                customer.GetAccounts<CheckingAccount>()
+                    .ForEach(a => a.CompoundInterest(InterestRate));
+                customer.GetAccounts<BusinessAccount>()
+                    .ForEach(a => { if (a.Balance > 0) { a.CompoundInterest(InterestRate); } });
             }
         }
 

@@ -100,7 +100,7 @@ namespace Project0
             decimal diff = Balance - amount;
             if(diff < 0)
             {
-                Balance -= (diff * Bank.InterestRate);
+                Balance += (diff * Bank.InterestRate);
                 res = TransferResult.SuccessBorrowing;
             }
             Balance -= amount;
